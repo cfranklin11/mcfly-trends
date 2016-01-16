@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {packages: ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <form action="http://www.google.com/trends/fetchComponent" method="get">
+        Search Terms (separated by commas only): <input type="text" name="terms">
+        <input type="submit">
+      </form>
+    </header>
+
+    <main>
+    </main>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
