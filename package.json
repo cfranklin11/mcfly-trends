@@ -1,0 +1,19 @@
+{
+  "name": "trends-reader",
+  "version": "1.0.0",
+  "description": "Create data table from Google Trends",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cfranklin11/trends-reader.git"
+  },
+  "author": "Craig",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cfranklin11/trends-reader/issues"
+  },
+  "homepage": "https://github.com/cfranklin11/trends-reader#readme"
+}
