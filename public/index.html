@@ -1,17 +1,33 @@
 <html>
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+    google.charts.load('current', {packages: ['corechart']});
+    // google.charts.setOnLoadCallback( getData );
+</script>
   </head>
 
   <body>
     <header>
-      <form action="https://www.google.com/trends/fetchComponent" method="get">
-        Search Terms (separated by commas only): <input type="text" name="terms">
+      <form action="https://www.google.com/trends/fetchComponent" method="get" id="form">
+        Search Terms (separated by commas): <input type="text" name="terms">
+        <select name="country" form="form">
+          <option value="">Worldwide</option>
+          <option value="AU">Australia</option>
         <input type="submit">
       </form>
+      <button id="csv">Download CSV</button>
     </header>
 
     <main>
+      <table>
+        <thead>
+          <tr>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </main>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
