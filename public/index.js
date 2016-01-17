@@ -14,3 +14,22 @@
     });
   });
 })( jQuery );
+
+google.charts.load('current', {packages: ['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart () {
+  var query = new google.visualization.Query('https://www.google.com/trends/fetchComponent?q=asdf,qwerty&cid=TIMESERIES_GRAPH_0&export=3');
+  query.send( handleQueryResponse );
+}
+
+function handleQueryResponse(response) {
+
+  if (response.isError()) {
+    alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+    return;
+  }
+
+  var data = response.getDataTable();
+  console.log(data);
+}
