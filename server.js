@@ -6,7 +6,8 @@ var port = process.env.PORT || 8080,
   bodyParser = require( 'body-parser' ), //Parser for reading request body
   path = require( 'path' ), //Utilities for dealing with file paths
   morgan = require( 'morgan' ),
-  methodOverride = require( 'method-override' );
+  methodOverride = require( 'method-override' ),
+  csv = require( 'csv-generate' );
 
   // For setting up access to Twitter's open API
   // var twitter = require( './config/twitter-api.js' );
@@ -34,7 +35,7 @@ app.use( express.static( __dirname + '/public' ));
 
 //Routes
 // load our routes and pass in our app and fully configured passport
-require( './routes.js' )( app );
+require( './routes.js' )( app, csv );
 
 // launch ======================================================================
 app.listen( port );

@@ -53,6 +53,8 @@
         startUrl = startMonth.toString() + '/' + startYear.toString();
         monthDiff = ( endYear - startYear ) * 12 - startMonth + endMonth + 1;
 
+        // Month difference must be > 36 for Google Trends to return
+        // data by month
         if ( monthDiff < 37 ) {
           return alert( 'Start and end dates must be more than 3 years apart' +
             ' to get monthly data (otherwise, data is broken down by week)' );
@@ -99,6 +101,24 @@
         data.push( rowData );
       }
     }
+
+    console.log(data);
+
+    // $.ajax({
+    //   url: '/csv',
+    //   method: 'GET',
+    //   data: { data: data },
+    //   success: function ( data, response ) {
+    //     console.log(response);
+    //     console.log(data);
+
+
+    //     window.open(encodeURI(data));
+    //   },
+    //   error: function ( status, error ) {
+    //     console.log(error);
+    //   }
+    // });
 
     // Use array to create CSV string
     data.forEach( function ( infoArray, index ) {
