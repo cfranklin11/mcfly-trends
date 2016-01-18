@@ -2,9 +2,8 @@
   <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-    google.charts.load('current', {packages: ['corechart']});
-    // google.charts.setOnLoadCallback( getData );
-</script>
+      google.charts.load('current', {packages: ['corechart']});
+    </script>
   </head>
 
   <body>
@@ -15,6 +14,9 @@
           <option value="">Worldwide</option>
           <option value="AU">Australia</option>
           <option value="NZ">New Zealand</option>
+        </select>
+        Start Date (optional)<input type="month" name="start">
+        End Date (optional)<input type="month" name="end">
         <input type="submit">
       </form>
       <button id="csv">Download CSV</button>

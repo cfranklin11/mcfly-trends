@@ -7,15 +7,66 @@
     var form = $( 'form' ),
       searchTerms = form.find( 'input[name=terms]' ).val(),
       country = form.find( 'select[name=country]' ).val(),
+      startDate = form.find( 'input[name=start]' ).val(),
+      startYM = startDate.split( '-' ),
+      startYear = parseFloat( startYM[ 0 ]),
+      startMonth = parseFloat( startYM[ 1 ]),
+      endDate = form.find( 'input[name=end]' ).val(),
+      endYM = endDate.split( '-' ),
+      endYear = parseFloat( endYM[ 0 ]),
+      endMonth = parseFloat( endYM[ 1 ]),
+      today = new Date(),
+      thisYear = today.getFullYear(),
+      thisMonth = today.getMonth() + 1,
       url = form.attr( 'action' ),
       queryUrl = 'q=' + encodeURIComponent( searchTerms ),
-      geoUrl;
+      geoUrl, startUrl, monthUrl, dateUrl, monthDiff;
 
-      country === '' ? geoUrl = '' : geoUrl = 'geo=' + encodeURIComponent( country );
+      country === '' ? geoUrl = '' :
+        geoUrl = '&geo=' + encodeURIComponent( country );
 
-      var params = '?' + queryUrl + '&' + geoUrl + '&' + '&cid=TIMESERIES_GRAPH_0&export=3',
+      // If no dates chosen, don't specify dates in query URL
+      if ( startDate === '' && endDate === '' ){
+        dateUrl = '';
+
+      } else {
+        // Set the lower limit for date range (if year or month left blank,
+        // they = NaN)
+        if ( startYear < 2004 && startMonth < 1 || !startYear || !startMonth ) {
+          startYear = 2004;
+          startMonth = 1;
+          $( 'input[name=start]' ).val( '2004-01' );
+        }
+
+        // Set the upper limit for date range (if year or month left blank,
+        // they = NaN)
+        if ( endYear > thisYear || endYear === thisYear && endMonth > thisMonth ||
+          !endYear || !endMonth ) {
+            endYear = thisYear;
+            endMonth = thisMonth;
+            yearString = endYear.toString();
+            endMonth < 10 ? monthString = '0' + endMonth.toString() :
+              monthString = endMonth.toString();
+            $( 'input[name=end]' ).val( yearString + '-' + monthString );
+        }
+
+        startUrl = startMonth.toString() + '/' + startYear.toString();
+        monthDiff = ( endYear - startYear ) * 12 - startMonth + endMonth + 1;
+
+        if ( monthDiff < 37 ) {
+          return alert( 'Start and end dates must be more than 3 years apart' +
+            ' to get monthly data (otherwise, data is broken down by week)' );
+        }
+
+        monthUrl = monthDiff.toString() + 'm';
+        dateUrl = '&date=' + encodeURIComponent( startUrl + ' ' + monthUrl );
+      }
+
+      var params = '?' + queryUrl + geoUrl + dateUrl +
+          '&cid=TIMESERIES_GRAPH_0&export=3',
         callUrl = url + params;
-console.log(callUrl);
+
+    console.log(callUrl);
     getData( callUrl );
   });
 
