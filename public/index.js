@@ -1,3 +1,5 @@
+'use strict';
+
 // jQuery event listeners
 ( function ( $ ) {
 
@@ -20,13 +22,13 @@
       thisMonth = today.getMonth() + 1,
       url = form.attr( 'action' ),
       queryUrl = 'q=' + encodeURIComponent( searchTerms ),
-      geoUrl, startUrl, monthUrl, dateUrl, monthDiff;
+      geoUrl, startUrl, monthUrl, dateUrl, monthDiff, params, callUrl;
 
       country === '' ? geoUrl = '' :
         geoUrl = '&geo=' + encodeURIComponent( country );
 
       // If no dates chosen, don't specify dates in query URL
-      if ( startDate === '' && endDate === '' ){
+      if ( startDate === '' && endDate === '' ) {
         dateUrl = '';
 
       } else {
@@ -64,9 +66,10 @@
         dateUrl = '&date=' + encodeURIComponent( startUrl + ' ' + monthUrl );
       }
 
-      var params = '?' + queryUrl + geoUrl + dateUrl +
-          '&cid=TIMESERIES_GRAPH_0&export=3',
-        callUrl = url + params;
+      // Join URL parameter strings, then create the whole URL
+      params = '?' + queryUrl + geoUrl + dateUrl +
+          '&cid=TIMESERIES_GRAPH_0&export=3';
+      callUrl = url + params;
 
     console.log(callUrl);
     getData( callUrl );
@@ -77,58 +80,41 @@
     var tableRows = $( 'tr' ),
       rowCount = tableRows.length,
       colCount = $( 'th' ).length,
-      data = [],
       csvContent = "data:text/csv;charset=utf-8,",
-      i, j, tableCols, rowData, dataString;
+      i, j, tableCols, tableCol, encodedUri, link, tableRow, rowString;
 
-    // Create array from data table on page
+    // Create CSV string from data table on page
     if ( rowCount > 1 ) {
+
+      // Iterate throw each row
       for ( i = 0; i < rowCount; i++ ) {
-        rowData = [];
+        rowString = '';
         tableRow = $( tableRows[ i ]);
 
         i === 0 ? tableCols = $( tableRow ).children( 'th' ) :
           tableCols = $( tableRow ).children( 'td' );
 
+        // Iterate through each cell in the row, adding the text
+        // to the row string, with commas to separate columns
         for ( j = 0; j < colCount; j++ ) {
-          tableCol = $( tableCols[ j ] );
-          if ( j > 1 && i > 0 ) {
-            rowData.push( parseFloat( tableCol.text() ));
-          } else {
-            rowData.push( tableCol.text() );
-          }
+          j < colCount - 1 ? rowString += $( tableCols[ j ]).text() + ',' :
+            rowString += $( tableCols[ j ]).text();
         }
-        data.push( rowData );
+
+        // Add the row string to the CSV string. Add line breaks
+        // at the ends of rows except on the final row
+        i < rowCount - 1 ? csvContent += rowString + '\n' :
+          csvContent += rowString;
       }
     }
 
-    console.log(data);
-
-    // $.ajax({
-    //   url: '/csv',
-    //   method: 'GET',
-    //   data: { data: data },
-    //   success: function ( data, response ) {
-    //     console.log(response);
-    //     console.log(data);
-
-
-    //     window.open(encodeURI(data));
-    //   },
-    //   error: function ( status, error ) {
-    //     console.log(error);
-    //   }
-    // });
-
-    // Use array to create CSV string
-    data.forEach( function ( infoArray, index ) {
-      var dataString = infoArray.join(",");
-      csvContent += index < data.length ? dataString + "\n" : dataString;
-    });
-
     // Use CSV string to create CSV file, then download it
-    var encodedUri = encodeURI(csvContent);
-    window.open(encodedUri);
+    encodedUri = encodeURI( csvContent );
+    link = document.createElement( 'a' );
+    link.setAttribute( 'href', encodedUri );
+    link.setAttribute( 'download', 'monthly-data.csv');
+
+    link.click();
   });
 })( jQuery );
 
@@ -145,12 +131,8 @@ function handleData (response) {
     return;
   }
 
-  var data = response.getDataTable();
-  
-  $( 'thead' ).children( 'tr' ).empty();
-  $( 'tbody' ).empty();
-
-  var colLabels = data.If,
+  var data = response.getDataTable(),
+    colLabels = data.If,
     colsLength = data.If.length,
     rows = data.Jf,
     rowsLength = rows.length,
@@ -160,15 +142,22 @@ function handleData (response) {
     rowString = '<th>Year</th><th>Month</th>', // Date is always first column
     dateData, rowData, i, k;
 
+    // Empty existing table, and set up new one
+  $( 'thead' ).children( 'tr' ).empty();
+  $( 'tbody' ).empty();
   table.attr( 'border', '1' );
 
-  // After month/year, add 1 column per search term
+  // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
-    rowString += '<th>' + colLabels[ i ].label + ' Search Volume</th>';
+    rowString += '<th>' + "'" + colLabels[ i ].label + "'" + ' Search Volume</th>';
   }
+
+  // Append the string that represents the 'thead' inner HTML to the DOM,
+  // then reset the rowString
   labelRow.append( rowString );
   rowString = '';
 
+  // Create new row
   for ( i = 0; i < rowsLength; i++ ) {
     rowString += '<tr>';
     rowData = rows[ i ][ 'c' ];
@@ -177,10 +166,15 @@ function handleData (response) {
     dateData = rowData[ 0 ][ 'f' ].split( ' ' );
     rowString += '<td>' + dateData[ 1 ] + '</td><td>' + dateData[ 0 ] + '</td>';
 
+    // Create a new cell in table per data point in row
     for ( k = 1; k < colsLength; k++ ) {
       rowString += '<td>' + rowData[ k ][ 'f' ] + '</td>';
     }
+
+    // Close the row
     rowString += '</tr>';
   }
+
+  // Append the string that represents the table's inner HTML to the DOM
   tbody.append( rowString );
 }

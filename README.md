@@ -1,3 +1,3 @@
-# trends-reader
+# Monthly Trends
 
-https://trends-reader.herokuapp.com
+https://monthly-trends.herokuapp.com

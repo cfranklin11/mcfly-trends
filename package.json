@@ -1,7 +1,7 @@
 {
-  "name": "trends-reader",
+  "name": "monthly-trends",
   "version": "1.0.0",
-  "description": "Create data table from Google Trends",
+  "description": "Create monthly data table from Google Trends",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/cfranklin11/trends-reader.git"
   },
-  "author": "Craig",
+  "author": "Craig Franklin",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/cfranklin11/trends-reader/issues"
@@ -18,10 +18,7 @@
   "homepage": "https://github.com/cfranklin11/trends-reader#readme",
   "dependencies": {
     "body-parser": "^1.14.2",
-    "csv": "^0.4.6",
-    "csv-generate": "^1.0.0",
     "express": "^4.13.3",
-    "json2csv": "^3.0.2",
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "path": "^0.12.7"

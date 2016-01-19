@@ -34,8 +34,9 @@ app.use( methodOverride() ); //checks request.body for HTTP method overrides
 app.use( express.static( __dirname + '/public' ));
 
 //Routes
-// load our routes and pass in our app and fully configured passport
-require( './routes.js' )( app, csv );
+app.get( '/', function ( req, res ) {
+  res.render( 'index' );
+});
 
 // launch ======================================================================
 app.listen( port );

@@ -9,33 +9,50 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>Google Trends by Month</title>
     <meta name="author" content="Craig">
     <meta name="description" content="Google Trends by Month: Simple web app to get trends data broken down by month">
     <meta name="keywords" content="google,trends,search">
-    <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
 
+    <title>Google Trends by Month</title>
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <!-- Google Visualization library -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load('current', {packages: ['corechart']});
     </script>
+
   </head>
 
   <body>
     <header>
       <form action="https://www.google.com/trends/fetchComponent" method="get" id="form">
-        Search Terms (separated by commas): <input type="text" name="terms">
-        <select name="country" form="form">
-          <option value="">Worldwide</option>
-          <option value="AU">Australia</option>
-          <option value="NZ">New Zealand</option>
-        </select>
-        Start Date (optional)<input type="month" name="start">
-        End Date (optional)<input type="month" name="end">
-        <input type="submit">
+        <div class="form-group">
+          <label for="terms">Search Terms (separated by commas):</label>
+          <input type="text" name="terms" id="terms" class="form-control">
+        </div>
+        <div class="form-group">
+          <select name="country" form="form">
+            <option value="">Worldwide</option>
+            <option value="AU">Australia</option>
+            <option value="NZ">New Zealand</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="start">Start Date (optional)</label>
+          <input type="month" name="start" id="start" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="end">End Date (optional)</label>
+          <input type="month" name="end" id="end" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
       </form>
-      <button id="csv">Download CSV</button>
+
+
+      <button id="csv" class="btn btn-default">Download CSV</button>
     </header>
 
     <main>
@@ -49,7 +66,10 @@
       </table>
     </main>
 
+    <!-- jQuery Library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <!-- Bootstrap JS Library -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script src="index.js"></script>
   </body>
 </html>
