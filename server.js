@@ -7,13 +7,9 @@ var port = process.env.PORT || 8080,
   path = require( 'path' ), //Utilities for dealing with file paths
   morgan = require( 'morgan' ),
   methodOverride = require( 'method-override' ),
-  csv = require( 'csv-generate' );
-
-  // For setting up access to Twitter's open API
-  // var twitter = require( './config/twitter-api.js' );
 
 //Create server
-var app = express();
+app = express();
 
 // set up our express application
 app.use( morgan( 'dev' )); // log every request to the console
@@ -22,13 +18,6 @@ app.use( bodyParser.urlencoded({
   extended: false
 }));
 app.use( methodOverride() ); //checks request.body for HTTP method overrides
-
-//Allow cross-origin resource sharing
-// app.use( function ( req, res, next ) {
-//   res.header( 'Access-Control-Allow-Origin', '*' );
-//   res.header( 'Access-Control-Allow-Headers', 'X-Requested-With' );
-//   next();
-// });
 
 //Set client-side directory
 app.use( express.static( __dirname + '/public' ));
