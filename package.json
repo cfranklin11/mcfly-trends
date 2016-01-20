@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cfranklin11/trends-reader.git"
+    "url": "git+https://github.com/cfranklin11/monthly-trends.git"
   },
   "author": "Craig Franklin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cfranklin11/trends-reader/issues"
+    "url": "https://github.com/cfranklin11/monthly-trends/issues"
   },
-  "homepage": "https://github.com/cfranklin11/trends-reader#readme",
+  "homepage": "https://github.com/cfranklin11/monthly-trends#readme",
   "dependencies": {
     "body-parser": "^1.14.2",
     "express": "^4.13.3",

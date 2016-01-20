@@ -18,6 +18,7 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="index.css"
     <!-- Google Visualization library -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
@@ -27,10 +28,11 @@
   </head>
 
   <body>
-    <header>
+    <header class="page-header">
+      <h1>Monthly Google Trends Data</h1>
     </header>
 
-    <div class="container">
+    <div class="container well">
       <form action="https://www.google.com/trends/fetchComponent" method="get" id="form">
         <div class="form-group">
           <label for="terms">Search Terms (separated by commas):</label>
@@ -55,16 +57,20 @@
           <label for="end">End Date (optional)</label>
           <input type="month" name="end" id="end" class="form-control">
         </div>
-
-        <button type="submit" disabled="disabled" id="search-submit" class="btn btn-primary">Submit</button>
+        <div class="container col-sm-offset-4 col-sm-4">
+          <button type="submit" disabled="disabled" id="search-submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+        </div>
       </form>
-    </div>
+    </div><br>
 
     <div class="container">
-      <button id="csv" disabled="disabled" class="btn btn-default">Download CSV</button>
+      <div class="container col-sm-offset-4 col-sm-4">
+        <button id="csv" disabled="disabled" class="btn btn-lg btn-block">Download CSV</button>
+      </div>
+    </div><br>
 
-      <main>
-        <table>
+      <main class="container">
+        <table id="table" class="table table-bordered table-condensed">
           <thead>
             <tr>
             </tr>
@@ -73,7 +79,6 @@
           </tbody>
         </table>
       </main>
-    </div>
 
     <!-- jQuery Library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>

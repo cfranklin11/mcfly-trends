@@ -190,4 +190,5 @@ function handleData (response) {
   tbody.append( rowString );
 
   $( '#csv' ).prop( 'disabled', false );
+  $( '#csv' ).addClass( 'btn-success' );
 }
