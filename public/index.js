@@ -3,6 +3,17 @@
 // jQuery event listeners
 ( function ( $ ) {
 
+  // Disable submit button if there's no text in the search term field,
+  // enable it if there is text
+  $( '#terms' ).keyup( function ( event ) {
+    var text = $( '#terms' ).val(),
+      submitBtn = $( '#search-submit' ),
+      submitDisabled = submitBtn.prop( 'disabled' );
+
+    if ( text !== '' && submitDisabled ) { submitBtn.prop( 'disabled', false );}
+    if ( text === '' && !submitDisabled ) { submitBtn.prop( 'disabled', true );}
+  })
+
   // Form submit listener to make call to Google Trends
   $( 'form' ).submit( function ( event ) {
     event.preventDefault();
@@ -177,4 +188,6 @@ function handleData (response) {
 
   // Append the string that represents the table's inner HTML to the DOM
   tbody.append( rowString );
+
+  $( '#csv' ).prop( 'disabled', false );
 }
