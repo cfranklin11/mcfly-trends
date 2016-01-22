@@ -8,4 +8,6 @@ Current limitations (all due to laziness rather than technical issues):
 - No support for categories.
 - Web Search only.
 
-Hosted on https://monthlytrends.herokuapp.com
+Hosted on https://mcflytrends.herokuapp.com
+
+Credit to Waitohi Wiremu for the idea.

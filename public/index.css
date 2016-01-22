@@ -1,0 +1,21 @@
+/*@media (min-width: 768px) {
+  #start-div {
+    padding-left: 0;
+  }
+
+  #end-div {
+    padding-right: 0;
+  }
+}*/
+
+/*@media (max-width: 767px) {*/
+  #start-div {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  #end-div {
+    padding-left: 0;
+    padding-right: 0;
+  }
+/*}*/
