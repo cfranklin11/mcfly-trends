@@ -57,7 +57,6 @@
           !endYear || !endMonth ) {
             endYear = thisYear;
             endMonth = thisMonth;
-            console.log(typeof endYear);
             yearString = endYear.toString();
             endMonth < 10 ? monthString = '0' + endMonth.toString() :
               monthString = endMonth.toString();
@@ -148,16 +147,20 @@ function handleData (response) {
     colsLength = data.If.length,
     rows = data.Jf,
     rowsLength = rows.length,
-    table = $( 'table' ),
+    table = $( 'table2' ),
     labelRow = table.children( 'thead' ).children( 'tr' ),
     tbody = table.children( 'tbody' ),
     rowString = '<th>Year</th><th>Month</th>', // Date is always first column
     dateData, rowData, i, k;
 
+    console.log(data);
+
+    // Process data to get monthly weights
+    monthWeights( data );
+
     // Empty existing table, and set up new one
-  $( 'thead' ).children( 'tr' ).empty();
-  $( 'tbody' ).empty();
-  table.attr( 'border', '1' );
+  $( '#table2').find( 'thead' ).children( 'tr' ).empty();
+  $( '#table2').find( 'tbody' ).empty();
 
   // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
@@ -191,4 +194,71 @@ function handleData (response) {
   tbody.append( rowString );
 
   $( '#csv-div' ).removeClass( 'hidden' );
+}
+
+function monthWeights ( data ) {
+  var tableData = {
+      January: [],
+      February: [],
+      March: [],
+      April: [],
+      May: [],
+      June: [],
+      July: [],
+      August: [],
+      September: [],
+      October: [],
+      November: [],
+      December: []
+    },
+    avgs = [],
+    colsCount = data.If.length,
+    dataRows = data.Jf,
+    rowsCount = dataRows.length,
+    i, avg, avgSum, avgTotal, key, date, month, monthSum, monthAvg, monthAvgs, monthAvgTotal;
+
+  for ( i = 1; i < colsCount; i++ ) {
+    avg = d3.mean( data.Jf, function ( d ) {
+      return d.c[ i ].v;
+    });
+    avgs.push( avg );
+  }
+
+  for ( key in tableData ) {
+    monthAvg = d3.mean( data.Jf, function ( d ) {
+      date = d.c[ 0 ].f.split( ' ' );
+      month = date[ 0 ];
+
+      if ( month === key ) {
+        monthSum = 0;
+
+        for ( i = 1; i < colsCount; i++ ) {
+          monthSum += d.c[ i ].v;
+        }
+
+        monthAvg = monthSum / ( colsCount - 1 );
+        tableData[ key ].push( monthAvg );
+      }
+    })
+  }
+
+  avgSum = d3.sum( avgs, function ( d ) {
+    return d;
+  });
+
+  avgTotal = avgSum / ( colsCount - 1 );
+
+  for ( key in tableData ) {
+    monthAvg = d3.mean( tableData[ key ], function ( d ) {
+      return d;
+    });
+    tableData[ key ] = monthAvg / avgTotal;
+  };
+
+  var test = 0;
+
+  for ( key in tableData ) {
+    test += tableData[ key ];
+  }
+  console.log(test);
 }
