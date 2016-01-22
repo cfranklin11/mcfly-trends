@@ -30,70 +30,70 @@
 
   <body>
     <div class="row">
-    <header class="container text-center col-sm-6 col-sm-offset-3">
-      <div class="row">
-      <div class="col-xs-4 col-xs-offset-4">
-      <img src="dachshund.png" alt="McFly the Dachshund" class="img-responsive center-block">
+      <header class="container text-center col-sm-6 col-sm-offset-3">
+        <div class="row">
+          <div class="col-xs-4 col-xs-offset-4">
+            <img src="dachshund.png" alt="McFly the Dachshund" class="img-responsive center-block">
+          </div>
+        </div>
+        <p><h1>McFly Trends</h1></p>
+        <p><h1><small>Because Monthly is Better</small></h1></p>
+      </header>
     </div>
-  </div>
-      <p><h1>McFly Trends</h1></p>
-      <p><h1><small>Because Monthly is Better</small></h1></p>
-    </header>
-  </div>
 
-<div class="row">
-    <div class="container well col-sm-4 col-sm-offset-4">
-      <form action="https://www.google.com/trends/fetchComponent" method="get" id="form">
-        <div class="form-group">
-          <label for="terms">Search Terms (separated by commas)</label>
-          <input type="text" name="terms" id="terms" class="form-control">
-        </div>
-
-        <div class="form-group">
-          <label for="select">Location</label>
-          <select name="country" form="form" id="select" class="form-control">
-            <option value="">Worldwide</option>
-            <option value="AU">Australia</option>
-            <option value="NZ">New Zealand</option>
-          </select>
-        </div>
-
-           <div class="form-group col-lg-6" id="start-div">
-             <label for="start">Start Date (optional)</label>
-            <input type="month" name="start" id="start" class="form-control">
+    <div class="row">
+      <div class="container well col-sm-4 col-sm-offset-4">
+        <form action="https://www.google.com/trends/fetchComponent" method="get" id="form">
+          <div class="form-group">
+            <label for="terms">Search Terms (separated by commas)</label>
+            <input type="text" name="terms" id="terms" class="form-control">
           </div>
 
-           <div class="form-group col-lg-6" id="end-div">
-            <label for="end">End Date (optional)</label>
-            <input type="month" name="end" id="end" class="form-control">
+          <div class="form-group">
+            <label for="select">Location</label>
+            <select name="country" form="form" id="select" class="form-control">
+              <option value="">Worldwide</option>
+              <option value="AU">Australia</option>
+              <option value="NZ">New Zealand</option>
+            </select>
           </div>
 
-          <button type="submit" disabled="disabled" id="search-submit" class="btn btn-primary btn-lg btn-block">Submit</button>
-      </form>
-    </div>
-  </div>
+             <div class="form-group col-lg-6" id="start-div">
+               <label for="start">Start Date (optional)</label>
+              <input type="month" name="start" id="start" class="form-control">
+            </div>
 
-  <div class="hidden row" id="csv-div">
-    <div class="col-md-6 col-md-offset-3">
-      <div class="col-md-6">
-        <h3>Enjoy</h3>
-      </div>
-      <div class="col-md-6">
-        <button id="csv" class="btn btn-lg btn-block btn-success">Download CSV</button>
+             <div class="form-group col-lg-6" id="end-div">
+              <label for="end">End Date (optional)</label>
+              <input type="month" name="end" id="end" class="form-control">
+            </div>
+
+            <button type="submit" disabled="disabled" id="search-submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+        </form>
       </div>
     </div>
-  </div>
 
-      <main class="container col-md-6 col-md-offset-3">
-        <table id="table" class="table table-bordered table-condensed">
-          <thead>
-            <tr>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </main>
+    <div class="hidden row" id="csv-div">
+      <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        <div class="col-xs-6">
+          <h3>Enjoy</h3>
+        </div>
+        <div class="col-xs-6">
+          <button id="csv" class="btn btn-lg btn-block btn-success">Download CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="container col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+      <table id="table" class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </main>
 
     <!-- jQuery Library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
