@@ -189,7 +189,5 @@ function handleData (response) {
   // Append the string that represents the table's inner HTML to the DOM
   tbody.append( rowString );
 
-  $( '#csv' ).removeClass( 'hidden' );
-  $( '#csv' ).addClass( 'show' );
-  $( '#csv' ).addClass( 'btn-success' );
+  $( '#csv-div' ).removeClass( 'hidden' );
 }
