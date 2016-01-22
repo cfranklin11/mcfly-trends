@@ -33,7 +33,7 @@
       thisMonth = today.getMonth() + 1,
       url = form.attr( 'action' ),
       queryUrl = 'q=' + encodeURIComponent( searchTerms ),
-      geoUrl, startUrl, monthUrl, dateUrl, monthDiff, params, callUrl;
+      geoUrl, startUrl, monthUrl, dateUrl, monthDiff, params, callUrl, yearString, monthString;
 
       country === '' ? geoUrl = '' :
         geoUrl = '&geo=' + encodeURIComponent( country );
@@ -57,6 +57,7 @@
           !endYear || !endMonth ) {
             endYear = thisYear;
             endMonth = thisMonth;
+            console.log(typeof endYear);
             yearString = endYear.toString();
             endMonth < 10 ? monthString = '0' + endMonth.toString() :
               monthString = endMonth.toString();
