@@ -216,7 +216,7 @@ function handleData (response) {
 
   // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
-    if ( i === colsLength - 1 ) {
+    if ( colsLength > 2 && i === colsLength - 1 ) {
       termsArray.push( "and '" + colLabels[ i ].label + "'" );
     } else {
       termsArray.push( "'" + colLabels[ i ].label + "'" );
