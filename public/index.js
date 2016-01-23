@@ -88,34 +88,41 @@
 
   // Create CSV click listener to create & download file
   $( '#csv' ).click( function ( event ) {
-    var tableRows = $( 'tr' ),
-      rowCount = tableRows.length,
-      colCount = $( 'th' ).length,
+    var tables = $( 'table' ),
+      tableCount = tables.length,
       csvContent = "data:text/csv;charset=utf-8,",
-      i, j, tableCols, tableCol, encodedUri, link, tableRow, rowString;
+      i, j, k, table, tableRows, rowCount, colCount, tableCols, tableCol,
+      encodedUri, link, tableRow, rowString;
 
     // Create CSV string from data table on page
-    if ( rowCount > 1 ) {
+    // Iterate through each table
+    for ( i = 0; i < tableCount; i++ ) {
+
+      table = tables[ i ];
+      tableRows = $( table ).find( 'tr' );
+      rowCount = tableRows.length;
+      colCount = $( table ).children( 'thead' )
+        .find( 'tr:nth-child(2)' )
+        .children( 'th' )
+        .length
 
       // Iterate throw each row
-      for ( i = 0; i < rowCount; i++ ) {
-        rowString = '';
-        tableRow = $( tableRows[ i ]);
+      for ( j = 0; j < rowCount; j++ ) {
+        tableRow = tableRows[ j ];
 
-        i === 0 ? tableCols = $( tableRow ).children( 'th' ) :
+        j < 2 ? tableCols = $( tableRow ).children( 'th' ) :
           tableCols = $( tableRow ).children( 'td' );
 
         // Iterate through each cell in the row, adding the text
         // to the row string, with commas to separate columns
-        for ( j = 0; j < colCount; j++ ) {
-          j < colCount - 1 ? rowString += $( tableCols[ j ]).text() + ',' :
-            rowString += $( tableCols[ j ]).text();
+        for ( k = 0; k < colCount; k++ ) {
+          csvContent += $( tableCols[ k ]).text();
+          k < colCount - 1 ? csvContent += ',' : csvContent += '\n';
         }
 
-        // Add the row string to the CSV string. Add line breaks
-        // at the ends of rows except on the final row
-        i < rowCount - 1 ? csvContent += rowString + '\n' :
-          csvContent += rowString;
+        if ( j === rowCount - 1 ) {
+          csvContent += '\n'; 
+        }
       }
     }
 
@@ -168,8 +175,10 @@ function handleData (response) {
       November: 'December',
       December: 'January'
     },
+    termsArray = [],
+    csvDiv = $( '#csv-div' ),
     dateData, rowData, rawMonth, correctMonth, date, year, i, k, weightsString,
-    colSpan;
+    colSpan, termsString;
 
   console.log(data);
 
@@ -178,15 +187,13 @@ function handleData (response) {
   tbody2.empty();
   tbody1.empty();
 
-console.log(tbody1);
   // Process data to get monthly weights
   weightsString = monthWeights( data );
   tbody1.append( weightsString );
 
-  console.log(weightsString);
-
   // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
+    termsArray.push( "'" + colLabels[ i ].label + "'" )
     rowString += '<th>' + "'" + colLabels[ i ].label + "'" + ' Search Volume</th>';
   }
 
@@ -222,12 +229,12 @@ console.log(tbody1);
 
   // Append the string that represents the table's inner HTML to the DOM
   tbody2.append( rowString );
-
   colSpan = ( colsLength + 1 ).toString();
-  console.log(colSpan);
   thead2.children( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
+  termsString = termsArray.join( ', ' );
+  csvDiv.find( 'h3' ).text( "Here's your trends data for " + termsString + '. Enjoy.' );
 
-  $( '#csv-div' ).removeClass( 'hidden' );
+  csvDiv.removeClass( 'hidden' );
 }
 
 // Calculate monthly weights table to help with creating spend plans
@@ -242,7 +249,7 @@ function monthWeights ( data ) {
   for ( i = 1; i < colCount + 1; i++ ) {
     data.If[ i ] ? term = data.If[ i ].label : term = 'Monthly Weight';
     // tableData.push([ term ]);
-    tableString += '<tr><td>' + term + '</td>';
+    tableString += '<tr><td>' + "'" + term + "'" + '</td>';
 
     // Calculate the mean search volume of each row's mean
     // to get the overall mean
@@ -293,11 +300,11 @@ function monthWeights ( data ) {
         }
       });
 
-      tableString += '<td>' + ( monthAvgTotal / avgTotal ).toString() + '</td>';
+      tableString += '<td>' + ( monthAvgTotal / avgTotal ).toFixed( 2 ) + '</td>';
       // tableData[ i - 1 ].push( monthAvgTotal / avgTotal );
     }
 
-    tableString += '<td>' + ( avg / avgTotal ).toString() + '</td></tr>';
+    tableString += '<td>' + ( avg / avgTotal ).toFixed( 2 ) + '</td></tr>';
   }
 
   return tableString;
