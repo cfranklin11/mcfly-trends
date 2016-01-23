@@ -201,7 +201,24 @@ function handleData (response) {
     termsArray = [],
     csvDiv = $( '#csv-div' ),
     dateData, rowData, rawMonth, correctMonth, date, year, i, k, weightsString,
-    colSpan, termsString, scrollTarget;
+    colSpan, termsString, scrollTarget,
+    messages = [
+      'Enjoy!',
+      'Rock on!',
+      'Keep it real!',
+      'Wango the tango!',
+      'Buen provecho!',
+      'Bon appetit!',
+      'Bom proveito!',
+      "L'chaim!",
+      'Cheers!',
+      'Salud!',
+      'Salut!',
+      'Seize the day!',
+      'Everyday!'
+    ],
+    messageCount = messages.length,
+    message = messages[ Math.floor( Math.random() * messageCount )];
 
   console.log(data);
 
@@ -261,6 +278,7 @@ function handleData (response) {
   thead2.children( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
   termsString = termsArray.join( ', ' );
   csvDiv.find( 'h3' ).first().text( "Here's your trends data for " + termsString + '.');
+  csvDiv.find( 'h3' ).last().text( message );
 
   csvDiv.removeClass( 'hidden' );
   scrollTarget = csvDiv[ 0 ].offsetTop;
