@@ -27,3 +27,11 @@ table {
 form {
   margin-bottom: 0;
 }
+
+#csv {
+  float: left;
+}
+
+#top {
+  float: right;
+}

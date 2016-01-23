@@ -134,6 +134,29 @@
 
     link.click();
   });
+
+  // Event handler for 'go to top of page' button click
+  $( '#top' ).click( function ( event ) {
+    window.scrollTo( 0, 0 );
+  });
+
+  // Event handler to attach/detach navbar to top of window depending
+  // on scroll position
+  $( window ).scroll( function ( event ) {
+    var navDiv = $( '#nav-div' ),
+      nav = $( 'nav' ),
+      // navPos = $('#csv-div')[ 0 ].offsetTop,
+      navDivPos = navDiv[ 0 ].offsetTop,
+      browserPos = window.pageYOffset;
+
+    if ( browserPos > navDivPos ) {
+      nav.addClass( 'navbar-fixed-top' );
+    } 
+
+    if ( browserPos < navDivPos ) {
+      nav.removeClass( 'navbar-fixed-top' );
+    }
+  });
 })( jQuery );
 
 // Make call to Google Trends
@@ -178,7 +201,7 @@ function handleData (response) {
     termsArray = [],
     csvDiv = $( '#csv-div' ),
     dateData, rowData, rawMonth, correctMonth, date, year, i, k, weightsString,
-    colSpan, termsString;
+    colSpan, termsString, scrollTarget;
 
   console.log(data);
 
@@ -193,7 +216,12 @@ function handleData (response) {
 
   // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
-    termsArray.push( "'" + colLabels[ i ].label + "'" )
+    if ( i === colsLength - 1 ) {
+      termsArray.push( "and '" + colLabels[ i ].label + "'" );
+    } else {
+      termsArray.push( "'" + colLabels[ i ].label + "'" );
+    }
+
     rowString += '<th>' + "'" + colLabels[ i ].label + "'" + ' Search Volume</th>';
   }
 
@@ -232,9 +260,12 @@ function handleData (response) {
   colSpan = ( colsLength + 1 ).toString();
   thead2.children( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
   termsString = termsArray.join( ', ' );
-  csvDiv.find( 'h3' ).text( "Here's your trends data for " + termsString + '. Enjoy.' );
+  csvDiv.find( 'h3' ).first().text( "Here's your trends data for " + termsString + '.');
 
   csvDiv.removeClass( 'hidden' );
+  scrollTarget = csvDiv[ 0 ].offsetTop;
+  // window.scrollTo( 0, scrollTarget );
+  $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
 }
 
 // Calculate monthly weights table to help with creating spend plans
