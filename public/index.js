@@ -147,20 +147,34 @@ function handleData (response) {
     colsLength = data.If.length,
     rows = data.Jf,
     rowsLength = rows.length,
-    table = $( 'table2' ),
+    table = $( '#table2' ),
     labelRow = table.children( 'thead' ).children( 'tr' ),
     tbody = table.children( 'tbody' ),
     rowString = '<th>Year</th><th>Month</th>', // Date is always first column
-    dateData, rowData, i, k;
+    monthConverter = {
+      January: 'February',
+      February: 'March',
+      March: 'April',
+      April: 'May',
+      May: 'June',
+      June: 'July',
+      July: 'August',
+      August: 'September',
+      September: 'October',
+      October: 'November',
+      November: 'December',
+      December: 'January'
+    },
+    dateData, rowData, rawMonth, correctMonth, date, year, i, k;
 
-    console.log(data);
+  console.log(data);
 
-    // Process data to get monthly weights
-    monthWeights( data );
+  // Process data to get monthly weights
+  monthWeights( data );
 
     // Empty existing table, and set up new one
-  $( '#table2').find( 'thead' ).children( 'tr' ).empty();
-  $( '#table2').find( 'tbody' ).empty();
+    table.find( 'thead' ).children( 'tr' ).empty();
+    table.find( 'tbody' ).empty();
 
   // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
@@ -175,15 +189,22 @@ function handleData (response) {
   // Create new row
   for ( i = 0; i < rowsLength; i++ ) {
     rowString += '<tr>';
-    rowData = rows[ i ][ 'c' ];
+    rowData = rows[ i ].c;
+    date = new Date( rowData[ 0 ].v );
+    year = date.getFullYear();
 
-    // Split dates into month & year for easier data pivoting in Excel
-    dateData = rowData[ 0 ][ 'f' ].split( ' ' );
-    rowString += '<td>' + dateData[ 1 ] + '</td><td>' + dateData[ 0 ] + '</td>';
+    // Split date string into month & year, then get month only
+    rawMonth = rowData[ 0 ].f.split( ' ' ).shift();
+
+    // Convert month string to correct month
+    correctMonth = monthConverter[ rawMonth ];
+
+    // Add year/month labels to row
+    rowString += '<td>' + year + '</td><td>' + correctMonth + '</td>';
 
     // Create a new cell in table per data point in row
     for ( k = 1; k < colsLength; k++ ) {
-      rowString += '<td>' + rowData[ k ][ 'f' ] + '</td>';
+      rowString += '<td>' + rowData[ k ].f + '</td>';
     }
 
     // Close the row
@@ -196,69 +217,52 @@ function handleData (response) {
   $( '#csv-div' ).removeClass( 'hidden' );
 }
 
+// Calculate monthly weights table to help with creating spend plans
 function monthWeights ( data ) {
-  var tableData = {
-      January: [],
-      February: [],
-      March: [],
-      April: [],
-      May: [],
-      June: [],
-      July: [],
-      August: [],
-      September: [],
-      October: [],
-      November: [],
-      December: []
-    },
-    avgs = [],
-    colsCount = data.If.length,
-    dataRows = data.Jf,
-    rowsCount = dataRows.length,
-    i, avg, avgSum, avgTotal, key, date, month, monthSum, monthAvg, monthAvgs, monthAvgTotal;
+  var tableData = [],
+    i, avgTotal, avg, key, date, month, monthAvg, monthAvgTotal;
 
-  for ( i = 1; i < colsCount; i++ ) {
-    avg = d3.mean( data.Jf, function ( d ) {
-      return d.c[ i ].v;
-    });
-    avgs.push( avg );
-  }
+  // Calculate overall mean of search volume figures by calculating
+  // the mean of each row's mean
+  avgTotal = d3.mean( data.Jf, function ( d ) {
 
-  for ( key in tableData ) {
-    monthAvg = d3.mean( data.Jf, function ( d ) {
-      date = d.c[ 0 ].f.split( ' ' );
-      month = date[ 0 ];
-
-      if ( month === key ) {
-        monthSum = 0;
-
-        for ( i = 1; i < colsCount; i++ ) {
-          monthSum += d.c[ i ].v;
-        }
-
-        monthAvg = monthSum / ( colsCount - 1 );
-        tableData[ key ].push( monthAvg );
+    // Calculate search volume mean per row
+    avg = d3.mean( d.c, function ( e ) {
+      if ( Number.isInteger( e.v )) {
+        return e.v;
       }
-    })
-  }
+    });
 
-  avgSum = d3.sum( avgs, function ( d ) {
-    return d;
+    return avg;
   });
 
-  avgTotal = avgSum / ( colsCount - 1 );
+  // Calculate mean of each month's search volume, then % difference
+  // from overall mean
+  for ( i = 0; i < 12; i++ ) {
 
-  for ( key in tableData ) {
-    monthAvg = d3.mean( tableData[ key ], function ( d ) {
-      return d;
+    // Calculate total mean per month across all years
+    monthAvgTotal = d3.mean( data.Jf, function ( d ) {
+      date = new Date( d.c[ 0 ].v );
+      month = date.getMonth();
+
+      // Looping through month rows, if data month matches the month
+      // from our table, calculate the mean for that particular instance
+      // of the month (e.g. March 2006, then March 2007)
+      if ( i === month ) {
+        monthAvg = d3.mean( d.c, function ( e ) {
+          if ( Number.isInteger( e.v )) {
+            return e.v;
+          }
+        });
+
+        return monthAvg;
+      }
     });
-    tableData[ key ] = monthAvg / avgTotal;
-  };
 
-  var test = 0;
-
-  for ( key in tableData ) {
-    test += tableData[ key ];
+    // Divide each month's mean by the overall mean to get % difference
+    // (i.e. that month's weight)
+    tableData.push( monthAvgTotal / avgTotal );
   }
-  console.log(test);
+
+  console.log(tableData);
 }
