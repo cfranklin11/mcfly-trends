@@ -1,18 +1,25 @@
-'use strict';
+///////////////////////////////
+//// JQUERY EVENT HANDLERS ////
+///////////////////////////////
 
-// jQuery event listeners
 ( function ( $ ) {
+
+  'use strict';
 
   // Disable submit button if there's no text in the search term field,
   // enable it if there is text
-  $( '#terms' ).keyup( function ( event ) {
+  $( '#terms' ).keyup( function () {
     var text = $( '#terms' ).val(),
       submitBtn = $( '#search-submit' ),
       submitDisabled = submitBtn.prop( 'disabled' );
 
-    if ( text !== '' && submitDisabled ) { submitBtn.prop( 'disabled', false );}
-    if ( text === '' && !submitDisabled ) { submitBtn.prop( 'disabled', true );}
-  })
+    if ( text !== '' && submitDisabled ) {
+      submitBtn.prop( 'disabled', false );
+    }
+    if ( text === '' && !submitDisabled ) {
+      submitBtn.prop( 'disabled', true );
+    }
+  });
 
   // Form submit listener to make call to Google Trends
   $( 'form' ).submit( function ( event ) {
@@ -33,10 +40,10 @@
       thisMonth = today.getMonth() + 1,
       url = form.attr( 'action' ),
       queryUrl = 'q=' + encodeURIComponent( searchTerms ),
-      geoUrl, startUrl, monthUrl, dateUrl, monthDiff, params, callUrl, yearString, monthString;
+      geoUrl, startUrl, monthUrl, dateUrl, monthDiff, params, callUrl,
+      yearString, monthString;
 
-      country === '' ? geoUrl = '' :
-        geoUrl = '&geo=' + encodeURIComponent( country );
+      geoUrl = country === '' ? '' : '&geo=' + encodeURIComponent( country );
 
       // If no dates chosen, don't specify dates in query URL
       if ( startDate === '' && endDate === '' ) {
@@ -53,13 +60,13 @@
 
         // Set the upper limit for date range (if year or month left blank,
         // they = NaN)
-        if ( endYear > thisYear || endYear === thisYear && endMonth > thisMonth ||
-          !endYear || !endMonth ) {
+        if ( endYear > thisYear || endYear === thisYear &&
+          endMonth > thisMonth || !endYear || !endMonth ) {
             endYear = thisYear;
             endMonth = thisMonth;
             yearString = endYear.toString();
-            endMonth < 10 ? monthString = '0' + endMonth.toString() :
-              monthString = endMonth.toString();
+            monthString = endMonth < 10 ? '0' + endMonth.toString() :
+              endMonth.toString();
             $( 'input[name=end]' ).val( yearString + '-' + monthString );
         }
 
@@ -92,7 +99,7 @@
       tableCount = tables.length,
       csvContent = "data:text/csv;charset=utf-8,",
       i, j, k, table, tableRows, rowCount, colCount, tableCols, tableCol,
-      encodedUri, link, tableRow, rowString;
+      encodedUri, link, tableRow, tableString, colElement;
 
     // Create CSV string from data table on page
     // Iterate through each table
@@ -104,24 +111,24 @@
       colCount = $( table ).children( 'thead' )
         .find( 'tr:nth-child(2)' )
         .children( 'th' )
-        .length
+        .length;
 
       // Iterate throw each row
       for ( j = 0; j < rowCount; j++ ) {
         tableRow = tableRows[ j ];
 
-        j < 2 ? tableCols = $( tableRow ).children( 'th' ) :
-          tableCols = $( tableRow ).children( 'td' );
+        colElement = j< 2 ? 'th' : 'td';
+        tableCols = $( tableRow ).children( colElement );
 
         // Iterate through each cell in the row, adding the text
         // to the row string, with commas to separate columns
         for ( k = 0; k < colCount; k++ ) {
           csvContent += $( tableCols[ k ]).text();
-          k < colCount - 1 ? csvContent += ',' : csvContent += '\n';
+          csvContent += k < colCount - 1 ? ',' : '\n';
         }
 
         if ( j === rowCount - 1 ) {
-          csvContent += '\n'; 
+          csvContent += '\n';
         }
       }
     }
@@ -151,7 +158,7 @@
 
     if ( browserPos > navDivPos ) {
       nav.addClass( 'navbar-fixed-top' );
-    } 
+    }
 
     if ( browserPos < navDivPos ) {
       nav.removeClass( 'navbar-fixed-top' );
@@ -159,49 +166,33 @@
   });
 })( jQuery );
 
+/////////////////////////
+//// DATA PROCESSING ////
+/////////////////////////
+
 // Make call to Google Trends
 function getData ( url ) {
+  'use strict';
+
   var query = new google.visualization.Query( url );
-  query.send( handleData );
+  query.send( processData );
 }
 
 // Query callback to process the data object
-function handleData (response) {
-  if (response.isError()) {
-    alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-    return;
-  }
+function processData (response) {
+  'use strict';
 
   var data = response.getDataTable(),
     colLabels = data.If,
-    colsLength = data.If.length,
-    rows = data.Jf,
-    rowsLength = rows.length,
+    colsLength = colLabels.length,
     table2 = $( '#table2' ),
     thead2 = table2.children( 'thead' ),
     labelRow = thead2.children( 'tr' )[ 1 ],
     tbody2 = table2.children( 'tbody' ),
     table1 = $( '#table1' ),
     tbody1 = table1.children( 'tbody' ),
-    rowString = '<th>Year</th><th>Month</th>', // Date is always first column
-    monthConverter = {
-      January: 'February',
-      February: 'March',
-      March: 'April',
-      April: 'May',
-      May: 'June',
-      June: 'July',
-      July: 'August',
-      August: 'September',
-      September: 'October',
-      October: 'November',
-      November: 'December',
-      December: 'January'
-    },
     termsArray = [],
     csvDiv = $( '#csv-div' ),
-    dateData, rowData, rawMonth, correctMonth, date, year, i, k, weightsString,
-    colSpan, termsString, scrollTarget,
     messages = [
       'Enjoy!',
       'Rock on!',
@@ -218,66 +209,49 @@ function handleData (response) {
       'Everyday!'
     ],
     messageCount = messages.length,
-    message = messages[ Math.floor( Math.random() * messageCount )];
+    message = messages[ Math.floor( Math.random() * messageCount )],
+    weightsString, colSpan, termsString, scrollTarget, trendsArray,
+    labelString, trendsString, i;
+
+  // Handle error
+  if (response.isError()) {
+    alert('Error in query: ' + response.getMessage() + ' ' +
+      response.getDetailedMessage());
+    return;
+  }
 
   console.log(data);
 
-  // Empty existing table, and set up new one
-  $( labelRow ).empty();
-  tbody2.empty();
-  tbody1.empty();
-
-  // Process data to get monthly weights
-  weightsString = monthWeights( data );
-  tbody1.append( weightsString );
-
-  // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
     if ( colsLength > 2 && i === colsLength - 1 ) {
       termsArray.push( "and '" + colLabels[ i ].label + "'" );
     } else {
       termsArray.push( "'" + colLabels[ i ].label + "'" );
     }
-
-    rowString += '<th>' + "'" + colLabels[ i ].label + "'" + ' Search Volume</th>';
   }
 
-  // Append the string that represents the 'thead' inner HTML to the DOM,
-  // then reset the rowString
-  $( labelRow ).append( rowString );
-  rowString = '';
+  // Empty existing table, and set up new one
+  $( labelRow ).empty();
+  tbody2.empty();
+  tbody1.empty();
 
-  // Create new row
-  for ( i = 0; i < rowsLength; i++ ) {
-    rowString += '<tr>';
-    rowData = rows[ i ].c;
-    date = new Date( rowData[ 0 ].v );
-    year = date.getFullYear();
+  // Process data to get monthly weights table
+  weightsString = weightsTable( data );
+  tbody1.append( weightsString );
 
-    // Split date string into month & year, then get month only
-    rawMonth = rowData[ 0 ].f.split( ' ' ).shift();
-
-    // Convert month string to correct month
-    correctMonth = monthConverter[ rawMonth ];
-
-    // Add year/month labels to row
-    rowString += '<td>' + year + '</td><td>' + correctMonth + '</td>';
-
-    // Create a new cell in table per data point in row
-    for ( k = 1; k < colsLength; k++ ) {
-      rowString += '<td>' + rowData[ k ].f + '</td>';
-    }
-
-    // Close the row
-    rowString += '</tr>';
-  }
+  // Process data to get raw trends table
+  trendsArray = trendsTable( data );
+  labelString = trendsArray[ 0 ];
+  trendsString = trendsArray[ 1 ];
+  $( labelRow ).append( labelString );
+  tbody2.append( trendsString );
 
   // Append the string that represents the table's inner HTML to the DOM
-  tbody2.append( rowString );
   colSpan = ( colsLength + 1 ).toString();
   thead2.children( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
   termsString = termsArray.join( ', ' );
-  csvDiv.find( 'h3' ).first().text( "Here's your trends data for " + termsString + '.');
+  csvDiv.find( 'h3' ).first().text( "Here's your trends data for " +
+    termsString + '.');
   csvDiv.find( 'h3' ).last().text( message );
 
   csvDiv.removeClass( 'hidden' );
@@ -286,8 +260,14 @@ function handleData (response) {
   $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
 }
 
+//////////////////////////////
+//// CREATE TABLE STRINGS ////
+//////////////////////////////
+
 // Calculate monthly weights table to help with creating spend plans
-function monthWeights ( data ) {
+function weightsTable ( data ) {
+  'use strict';
+
   var tableData = [],
     tableString = '',
     avgs = [],
@@ -296,7 +276,7 @@ function monthWeights ( data ) {
 
   // Loop through each search term, then add totals at the end
   for ( i = 1; i < colCount + 1; i++ ) {
-    data.If[ i ] ? term = data.If[ i ].label : term = 'Monthly Weight';
+    term = data.If[ i ] ? data.If[ i ].label : 'Monthly Weight';
     // tableData.push([ term ]);
     tableString += '<tr><td>' + "'" + term + "'" + '</td>';
 
@@ -310,7 +290,6 @@ function monthWeights ( data ) {
           return e.v;
         }
       });
-
       return avg;
     });
 
@@ -344,17 +323,76 @@ function monthWeights ( data ) {
               }
             });
           }
-
           return monthAvg;
         }
       });
-
-      tableString += '<td>' + ( monthAvgTotal / avgTotal ).toFixed( 2 ) + '</td>';
-      // tableData[ i - 1 ].push( monthAvgTotal / avgTotal );
+      tableString += '<td>' + ( monthAvgTotal / avgTotal ).toFixed( 2 ) +
+        '</td>';
     }
-
     tableString += '<td>' + ( avg / avgTotal ).toFixed( 2 ) + '</td></tr>';
   }
-
   return tableString;
+}
+
+// Create trends table
+function trendsTable ( data ) {
+  'use strict';
+
+  var colLabels = data.If,
+    colsLength = colLabels.length,
+    rows = data.Jf,
+    rowsLength = rows.length,
+    termsArray = [],
+    tableString = '',
+    rowString = '<th>Year</th><th>Month</th>', // Date is always first column
+    monthConverter = {
+      January: 'February',
+      February: 'March',
+      March: 'April',
+      April: 'May',
+      May: 'June',
+      June: 'July',
+      July: 'August',
+      August: 'September',
+      September: 'October',
+      October: 'November',
+      November: 'December',
+      December: 'January'
+    },
+    dateData, rowData, rawMonth, correctMonth, date, year, i, j;
+
+  // After month/year, add 1 column label per search term
+  for ( i = 1; i < colsLength; i++ ) {
+    rowString += '<th>' + "'" + colLabels[ i ].label + "'" +
+      ' Search Volume</th>';
+  }
+
+  // Append the string that represents the 'thead' inner HTML to the DOM,
+  // then reset the tableString
+
+  // Create new row
+  for ( i = 0; i < rowsLength; i++ ) {
+    tableString += '<tr>';
+    rowData = rows[ i ].c;
+    date = new Date( rowData[ 0 ].v );
+    year = date.getFullYear();
+
+    // Split date string into month & year, then get month only
+    rawMonth = rowData[ 0 ].f.split( ' ' ).shift();
+
+    // Convert month string to correct month
+    correctMonth = monthConverter[ rawMonth ];
+
+    // Add year/month labels to row
+    tableString += '<td>' + year + '</td><td>' + correctMonth + '</td>';
+
+    // Create a new cell in table per data point in row
+    for ( j = 1; j < colsLength; j++ ) {
+      tableString += '<td>' + rowData[ j ].f + '</td>';
+    }
+
+    // Close the row
+    tableString += '</tr>';
+  }
+  return [ rowString, tableString ];
 }
