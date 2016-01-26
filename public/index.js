@@ -115,27 +115,32 @@
       rowCount = tableRows.length;
       colCount = tableRows.first().children( 'th' ).length;
 
-
+      // Add table titles separately with an extra space below
       for( j = 0; j < titleCount; j++ ) {
         title = $( titles[ j ]).text();
         csvContent += title + '\n';
       }
       csvContent += '\n';
 
-      // Iterate throw each row
+      // Iterate through each row
       for ( j = 0; j < rowCount; j++ ) {
         tableRow = tableRows[ j ];
         tableCells = $( tableRow ).children( 'th,td' );
 
 
         // Iterate through each cell in the row, adding the text
-        // to the row string, with commas to separate columns
+        // to the row string
         for ( k = 0; k < colCount; k++ ) {
           cell = tableCells[ k ];
           excluded = $( cell ).hasClass( 'excluded' );
 
+          // Only add columns that aren't excluded from monthly weights table
+          // (doesn't affect raw trends data table)
           if ( !excluded ) {
             csvContent += $( cell ).text();
+
+            // Commas to separate columns, finishing with a line break
+            // at the end of the row
             csvContent += k < colCount - 1 ? ',' : '\n';
           }
         }
@@ -152,6 +157,8 @@
     link.click();
   });
 
+  // Click listener for button to reset excluded months
+  // on monthly weights table
   $( '#reset' ).click( function () {
     var excludedCells = $( '#table1' ).find( '.excluded' );
     excludedCells.removeClass( 'excluded' );
@@ -239,6 +246,7 @@ function processData (response) {
 
   console.log(data);
 
+  // Push search terms into an array for later
   for ( i = 1; i < colsLength; i++ ) {
     if ( colsLength > 2 && i === colsLength - 1 ) {
       termsArray.push( "and '" + colLabels[ i ].label + "'" );
@@ -247,7 +255,7 @@ function processData (response) {
     }
   }
 
-  // Empty existing table, and set up new one
+  // Empty existing tables, and set up new ones
   tbody2.empty();
   tbody1.children( 'tr:not(:first)' ).empty();
   tbody1.find( '.excluded' ).addClass( 'included' );
@@ -273,6 +281,8 @@ function processData (response) {
     calculateWeights();
   });
 
+  // Add mouse hover effect to included columns to highlight months that user can
+  // exclude
   $( '.included' ).hover( function () {
     var column = $( this ).attr( 'data-col' ),
       columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' );
@@ -285,14 +295,17 @@ function processData (response) {
     columnCells.removeClass( 'table-hover' );
   });
 
-  // Append the string that represents the table's inner HTML to the DOM
+  // Adjust table title row
   colSpan = ( colsLength + 1 ).toString();
   table2.find( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
+
+  // Create message to place above top table
   termsString = termsArray.join( ', ' );
   csvDiv.find( 'h3' ).first().text( "Here's your trends data for " +
     termsString + '.');
   csvDiv.find( 'h3' ).last().text( message );
 
+  // Reveal data tables and auto-scroll down
   csvDiv.removeClass( 'hidden' );
   scrollTarget = csvDiv[ 0 ].offsetTop;
   $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
@@ -316,7 +329,6 @@ function weightsTable ( data ) {
   // Loop through each search term, then add totals at the end
   for ( i = 1; i < colCount + 1; i++ ) {
     term = data.If[ i ] ? "'" + data.If[ i ].label + "'" : 'Monthly Weight';
-    // tableData.push([ term ]);
     tableString += '<tr><th>' + term + '</th>';
 
     // Calculate the mean search volume of each row's mean
@@ -332,6 +344,7 @@ function weightsTable ( data ) {
       return termAvgTotal;
     });
 
+    // Save termAvgTotal to add to table later
     if ( data.If[ i ]) {
       termAvgTotal = d3.mean( data.Jf, function ( d ) {
         return d.c[ i ].v;
@@ -350,8 +363,9 @@ function weightsTable ( data ) {
         month = date.getMonth();
 
         // Looping through month rows, if data month matches the loop number,
-        // return the search volume. On last row, calculate the mean
-        // for for the whole row (e.g. mean for March 2006)
+        // return the search volume. On last weights table row, calculate the mean
+        // for the whole trends data row 
+        // (e.g. mean for March 2006 for allsearch terms)
         if ( j === month ) {
           if ( d.c[ i ] ) {
             avg = d.c[ i ].v;
@@ -365,6 +379,8 @@ function weightsTable ( data ) {
           return avg;
         }
       });
+
+      // Calculate weight and add to table string
       weight = ( monthAvg / avgTotal ).toFixed( 2 );
       tableString += '<td data-col="' + j + '" class="included" data-weight="' +
         weight + '">' + weight + '</td>';
@@ -375,7 +391,7 @@ function weightsTable ( data ) {
   return tableString;
 }
 
-// Create trends table
+// Create raw trends table
 function trendsTable ( data ) {
   'use strict';
 
@@ -384,7 +400,7 @@ function trendsTable ( data ) {
     rows = data.Jf,
     rowsLength = rows.length,
     termsArray = [],
-    tableString = '<tr><th>Year</th><th>Month</th>', // Date is always first column
+    tableString = '<tr><th>Year</th><th>Month</th>',
     monthConverter = {
       January: 'February',
       February: 'March',
@@ -435,7 +451,7 @@ function trendsTable ( data ) {
   return [ tableString ];
 }
 
-// Calculate monthly weights table to help with creating spend plans
+// Re-calculate monthly weights after user excludes/includes months
 function calculateWeights () {
   'use strict';
 
@@ -446,11 +462,13 @@ function calculateWeights () {
     weightsTable = [],
     i, j, row, cell, avgTotal, termAvgTotal, monthAvg, cells, value;
 
-  // Loop through each search term, then add totals at the end
+  // Loop through each row
   for ( i = 0; i < rowCount - 1; i++ ) {
     weightsTable.push( [] );
     row = $( rows[ i ]);
 
+    // Loop through each cell in the row, pushing 'included' months into 
+    // the data array
     for ( j = 0; j < 12; j++ ) {
       cell = row.children( '[data-col="' + j + '"]' );
 
@@ -468,6 +486,9 @@ function calculateWeights () {
     termAvgTotal = d3.mean( d, function ( e ) {
       return e;
     });
+
+    // Add the row's mean to the end of the data array
+    // (i.e. the last column of the table)
     weightsTable[ i ].push( termAvgTotal );
     return termAvgTotal;
   });
@@ -482,16 +503,17 @@ function calculateWeights () {
     monthAvg = d3.mean( weightsTable, function ( d, i ) {
 
       // Looping through month rows, if data month matches the loop number,
-      // return the search volume. On last row, calculate the mean
-      // for for the whole row (e.g. mean for March 2006)
+      // return the unmodified weight.
       return d[ j ];
     });
+
     weightsTable[ weightsTable.length - 1 ].push( monthAvg );
   }
 
   console.log(weightsTable);
 
-  // Loop through each search term, then add totals at the end
+  // Loop through 'included' cells of weights table and the weights array
+  // to change text of table cells to reflect new weights
   for ( i = 0; i < weightsTable.length; i++ ) {
     row = $( rows[ i ]);
     cells = row.children( '.included' );
