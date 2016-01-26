@@ -100,42 +100,43 @@
       csvContent = "data:text/csv;charset=utf-8,",
       i, j, k, l, table, tableRows, rowCount, colCount, tableCells, rowParentName,
       encodedUri, link, tableRow, tableString, excluded, headRowCount, cell,
-      tableLabel;
+      tableLabel, thead, tbody, titleRows, titles, titleCount, title;
 
     // Create CSV string from data table on page
     // Iterate through each table
     for ( i = 0; i < tableCount; i++ ) {
 
       table = tables[ i ];
-      tableRows = $( table ).find( 'tr' );
+      thead = $( table ).children( 'thead' );
+      titles = thead.find( 'h3,h4,h5,h6' );
+      titleCount = titles.length;
+      tbody = $( table ).children( 'tbody' );
+      tableRows = tbody.children( 'tr' );
       rowCount = tableRows.length;
-      colCount = $( table ).children( 'thead' )
-        .find( 'tr:nth-child(2)' )
-        .children( 'th' )
-        .length;
-      headRowCount = $( table ).children( 'thead' ).children( 'tr' ).length;
+      colCount = tableRows.first().children( 'th' ).length;
+
+
+      for( j = 0; j < titleCount; j++ ) {
+        title = $( titles[ j ]).text();
+        csvContent += title + '\n';
+      }
+      csvContent += '\n';
 
       // Iterate throw each row
       for ( j = 0; j < rowCount; j++ ) {
         tableRow = tableRows[ j ];
-        rowParentName = $( tableRow ).parent().prop( 'tagName' );
         tableCells = $( tableRow ).children( 'th,td' );
 
-        if ( j === 0 ) {
-          tableLabel = tableCells.find( 'h4,h5' ).first();
-          csvContent += $( tableLabel ).text() + '\n\n';
-        } else {
 
-          // Iterate through each cell in the row, adding the text
-          // to the row string, with commas to separate columns
-          for ( k = 0; k < colCount; k++ ) {
-            cell = tableCells[ k ];
-            excluded = $( cell ).hasClass( 'excluded' );
+        // Iterate through each cell in the row, adding the text
+        // to the row string, with commas to separate columns
+        for ( k = 0; k < colCount; k++ ) {
+          cell = tableCells[ k ];
+          excluded = $( cell ).hasClass( 'excluded' );
 
-            if ( !excluded ) {
-              csvContent += $( cell ).text();
-              csvContent += k < colCount - 1 ? ',' : '\n';
-            }
+          if ( !excluded ) {
+            csvContent += $( cell ).text();
+            csvContent += k < colCount - 1 ? ',' : '\n';
           }
         }
       }
@@ -151,14 +152,21 @@
     link.click();
   });
 
+  $( '#reset' ).click( function () {
+    var excludedCells = $( '#table1' ).find( '.excluded' );
+    excludedCells.removeClass( 'excluded' );
+    excludedCells.addClass( 'included' );
+    calculateWeights();
+  });
+
   // Event handler for 'go to top of page' button click
-  $( '#top' ).click( function ( event ) {
-    window.scrollTo( 0, 0 );
+  $( '#top' ).click( function () {
+  $( 'body' ).animate({ scrollTop: 0 }, 'slow' );
   });
 
   // Event handler to attach/detach navbar to top of window depending
   // on scroll position
-  $( window ).scroll( function ( event ) {
+  $( window ).scroll( function () {
     var navDiv = $( '#nav-div' ),
       nav = $( 'nav' ),
       // navPos = $('#csv-div')[ 0 ].offsetTop,
@@ -195,8 +203,6 @@ function processData (response) {
     colLabels = data.If,
     colsLength = colLabels.length,
     table2 = $( '#table2' ),
-    thead2 = table2.children( 'thead' ),
-    labelRow2 = thead2.children( 'tr' )[ 1 ],
     tbody2 = table2.children( 'tbody' ),
     table1 = $( '#table1' ),
     thead1 = table1.children( 'thead' ),
@@ -242,26 +248,22 @@ function processData (response) {
   }
 
   // Empty existing table, and set up new one
-  $( labelRow2 ).empty();
   tbody2.empty();
-  $( labelRow1 ).children( '.excluded' ).removeClass( 'excluded' );
-  $( labelRow1 ).children( '[data-included="0"]' ).attr( 'data-included', '1' );
-  tbody1.empty();
+  tbody1.children( 'tr:not(:first)' ).empty();
+  tbody1.find( '.excluded' ).addClass( 'included' );
+  tbody1.find( '.excluded' ).removeClass( 'excluded' );
 
   // Process data to get monthly weights table
   weightsString = weightsTable( data );
   tbody1.append( weightsString );
 
   // Process data to get raw trends table
-  trendsArray = trendsTable( data );
-  labelString = trendsArray[ 0 ];
-  trendsString = trendsArray[ 1 ];
-  $( labelRow2 ).append( labelString );
+  trendsString = trendsTable( data );
   tbody2.append( trendsString );
 
   // Add click listener to toggle whether or not given months are included
   // in monthly weights
-  $( '[data-col]' ).click( function ( event ) {
+  $( '[data-col]' ).click( function () {
     var cell = $( this ),
       col = cell.attr( 'data-col' ),
       colCells = cell.closest( 'table' ).find( '[data-col="' + col + '"]' );
@@ -271,9 +273,21 @@ function processData (response) {
     calculateWeights();
   });
 
+  $( '.included' ).hover( function () {
+    var column = $( this ).attr( 'data-col' ),
+      columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' );
+
+    columnCells.addClass( 'table-hover' );
+  }, function () {
+    var column = $( this ).attr( 'data-col' ),
+      columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' );
+
+    columnCells.removeClass( 'table-hover' );
+  });
+
   // Append the string that represents the table's inner HTML to the DOM
   colSpan = ( colsLength + 1 ).toString();
-  thead2.children( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
+  table2.find( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
   termsString = termsArray.join( ', ' );
   csvDiv.find( 'h3' ).first().text( "Here's your trends data for " +
     termsString + '.');
@@ -303,7 +317,7 @@ function weightsTable ( data ) {
   for ( i = 1; i < colCount + 1; i++ ) {
     term = data.If[ i ] ? "'" + data.If[ i ].label + "'" : 'Monthly Weight';
     // tableData.push([ term ]);
-    tableString += '<tr><td>' + term + '</td>';
+    tableString += '<tr><th>' + term + '</th>';
 
     // Calculate the mean search volume of each row's mean
     // to get the overall mean
@@ -370,8 +384,7 @@ function trendsTable ( data ) {
     rows = data.Jf,
     rowsLength = rows.length,
     termsArray = [],
-    tableString = '',
-    rowString = '<th>Year</th><th>Month</th>', // Date is always first column
+    tableString = '<tr><th>Year</th><th>Month</th>', // Date is always first column
     monthConverter = {
       January: 'February',
       February: 'March',
@@ -390,12 +403,10 @@ function trendsTable ( data ) {
 
   // After month/year, add 1 column label per search term
   for ( i = 1; i < colsLength; i++ ) {
-    rowString += '<th>' + "'" + colLabels[ i ].label + "'" +
+    tableString += '<th>' + "'" + colLabels[ i ].label + "'" +
       ' Search Volume</th>';
   }
-
-  // Append the string that represents the 'thead' inner HTML to the DOM,
-  // then reset the tableString
+  tableString += '</tr>';
 
   // Create new row
   for ( i = 0; i < rowsLength; i++ ) {
@@ -421,7 +432,7 @@ function trendsTable ( data ) {
     // Close the row
     tableString += '</tr>';
   }
-  return [ rowString, tableString ];
+  return [ tableString ];
 }
 
 // Calculate monthly weights table to help with creating spend plans
@@ -429,9 +440,9 @@ function calculateWeights () {
   'use strict';
 
   var table = $( '#table1' ),
-    rows = table.children( 'tbody' ).children( 'tr' ),
+    tbody = table.children( 'tbody' ),
+    rows = tbody.children( 'tr:not(:first)' ),
     rowCount = rows.length,
-    colCount = table.find( 'th' ).length,
     weightsTable = [],
     i, j, row, cell, avgTotal, termAvgTotal, monthAvg, cells, value;
 

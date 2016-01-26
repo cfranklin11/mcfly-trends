@@ -36,6 +36,40 @@ form {
   float: right;
 }
 
-.excluded {
-  background-color: DimGray;
+#reset {
+  float: right;
+  margin-top: 0.45em;
+}
+
+#table1 th h4 {
+  display: inline-block;
+  margin-left: 8%;
+}
+
+th {
+  background-color: #337ab7;
+  color: white;
+}
+
+td {
+  background-color: #f8f8f8;
+}
+
+th.excluded {
+  background-color: #f8f8f8;
+  color: white;
+}
+
+td.excluded {
+  background-color: white;
+  color: white;
+}
+
+th.table-hover.included {
+  background-color: #d9edf7;
+  color: gray;
+}
+
+td.table-hover.included {
+  background-color: white;
 }
