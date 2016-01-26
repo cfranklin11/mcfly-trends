@@ -35,3 +35,7 @@ form {
 #top {
   float: right;
 }
+
+.excluded {
+  background-color: DimGray;
+}
