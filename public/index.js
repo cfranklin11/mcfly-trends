@@ -98,8 +98,9 @@
     var tables = $( 'table' ),
       tableCount = tables.length,
       csvContent = "data:text/csv;charset=utf-8,",
-      i, j, k, table, tableRows, rowCount, colCount, tableCols, tableCol,
-      encodedUri, link, tableRow, tableString, colElement;
+      i, j, k, l, table, tableRows, rowCount, colCount, tableCells, rowParentName,
+      encodedUri, link, tableRow, tableString, excluded, headRowCount, cell,
+      tableLabel;
 
     // Create CSV string from data table on page
     // Iterate through each table
@@ -112,25 +113,33 @@
         .find( 'tr:nth-child(2)' )
         .children( 'th' )
         .length;
+      headRowCount = $( table ).children( 'thead' ).children( 'tr' ).length;
 
       // Iterate throw each row
       for ( j = 0; j < rowCount; j++ ) {
         tableRow = tableRows[ j ];
+        rowParentName = $( tableRow ).parent().prop( 'tagName' );
+        tableCells = $( tableRow ).children( 'th,td' );
 
-        colElement = j< 2 ? 'th' : 'td';
-        tableCols = $( tableRow ).children( colElement );
+        if ( j === 0 ) {
+          tableLabel = tableCells.find( 'h4,h5' ).first();
+          csvContent += $( tableLabel ).text() + '\n\n';
+        } else {
 
-        // Iterate through each cell in the row, adding the text
-        // to the row string, with commas to separate columns
-        for ( k = 0; k < colCount; k++ ) {
-          csvContent += $( tableCols[ k ]).text();
-          csvContent += k < colCount - 1 ? ',' : '\n';
-        }
+          // Iterate through each cell in the row, adding the text
+          // to the row string, with commas to separate columns
+          for ( k = 0; k < colCount; k++ ) {
+            cell = tableCells[ k ];
+            excluded = $( cell ).hasClass( 'excluded' );
 
-        if ( j === rowCount - 1 ) {
-          csvContent += '\n';
+            if ( !excluded ) {
+              csvContent += $( cell ).text();
+              csvContent += k < colCount - 1 ? ',' : '\n';
+            }
+          }
         }
       }
+      csvContent += '\n\n';
     }
 
     // Use CSV string to create CSV file, then download it
@@ -252,7 +261,7 @@ function processData (response) {
 
   // Add click listener to toggle whether or not given months are included
   // in monthly weights
-  $( '.included,.excluded' ).click( function ( event ) {
+  $( '[data-col]' ).click( function ( event ) {
     var cell = $( this ),
       col = cell.attr( 'data-col' ),
       colCells = cell.closest( 'table' ).find( '[data-col="' + col + '"]' );
