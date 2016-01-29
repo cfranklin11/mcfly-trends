@@ -1,4 +1,4 @@
-# Monthly Trends
+# McFly Trends
 
 A web app that queries Google Trends and displays the data broken down by month, which is way more useful than by week.
 
@@ -8,6 +8,6 @@ Current limitations (all due to laziness rather than technical issues):
 - No support for categories.
 - Web Search only.
 
-The original is hosted on https://mcflytrends.herokuapp.com
+The original is hosted at https://mcflytrends.herokuapp.com
 
 Credit to Waitohi Wiremu for the idea.

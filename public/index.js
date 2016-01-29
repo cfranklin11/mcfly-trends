@@ -206,10 +206,16 @@ function getData ( url ) {
 function processData (response) {
   'use strict';
 
+  // Handle errors
+  if (response.isError()) {
+    alert('Error in query: ' + response.getMessage() + ' ' +
+      response.getDetailedMessage());
+    return;
+  }
+
   var data = response.getDataTable(),
     colLabels = data.If,
-    colsLength = colLabels.length,
-    table2 = $( '#table2' ),
+    colsLength = colLabels.length,table2 = $( '#table2' ),
     tbody2 = table2.children( 'tbody' ),
     table1 = $( '#table1' ),
     thead1 = table1.children( 'thead' ),
@@ -230,21 +236,14 @@ function processData (response) {
       'Salud!',
       'Salut!',
       'Seize the day!',
-      'Everyday!'
+      'Everyday!',
+      'Booyah!',
+      'Hoowah!'
     ],
     messageCount = messages.length,
     message = messages[ Math.floor( Math.random() * messageCount )],
     weightsString, colSpan, termsString, scrollTarget, trendsArray,
     labelString, trendsString, i;
-
-  // Handle error
-  if (response.isError()) {
-    alert('Error in query: ' + response.getMessage() + ' ' +
-      response.getDetailedMessage());
-    return;
-  }
-
-  console.log(data);
 
   // Push search terms into an array for later
   for ( i = 1; i < colsLength; i++ ) {
