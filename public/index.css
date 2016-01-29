@@ -38,12 +38,19 @@ form {
 
 #reset {
   float: right;
-  margin-top: 0.45em;
+  margin-top: 0.9em;
 }
 
 #table1 th h4 {
   display: inline-block;
   margin-left: 8%;
+  margin-bottom: 0;
+}
+
+#table1 th h6 {
+  display: inline-block;
+  margin-left: 8%;
+  margin-top: 0;
 }
 
 th {
