@@ -108,7 +108,7 @@
 
       table = tables[ i ];
       thead = $( table ).children( 'thead' );
-      titles = thead.find( 'h3,h4,h5,h6' );
+      titles = thead.find( 'h4' );
       titleCount = titles.length;
       tbody = $( table ).children( 'tbody' );
       tableRows = tbody.children( 'tr' );
