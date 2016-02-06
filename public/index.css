@@ -69,16 +69,17 @@ th.excluded {
 
 td.excluded {
   background-color: white;
-  color: white;
+  color: #f8f8f8;
 }
 
-th.table-hover.included {
+th.table-hover {
   background-color: #d9edf7;
   color: gray;
 }
 
-td.table-hover.included {
+td.table-hover {
   background-color: white;
+  color: lightgray;
 }
 
 th[data-col], td[data-col] {

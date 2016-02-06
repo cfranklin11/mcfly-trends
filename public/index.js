@@ -240,10 +240,12 @@ function processData (response) {
       'Booyah!',
       'Hoowah!'
     ],
+    mousedown = false,
+    test = 'a',
     messageCount = messages.length,
     message = messages[ Math.floor( Math.random() * messageCount )],
     weightsString, colSpan, termsString, scrollTarget, trendsArray,
-    labelString, trendsString, i;
+    labelString, trendsString, i, col, colCells, firstCol, included;
 
   // Push search terms into an array for later
   for ( i = 1; i < colsLength; i++ ) {
@@ -270,14 +272,78 @@ function processData (response) {
 
   // Add click listener to toggle whether or not given months are included
   // in monthly weights
-  $( '[data-col]' ).click( function () {
-    var cell = $( this ),
-      col = cell.attr( 'data-col' ),
-      colCells = cell.closest( 'table' ).find( '[data-col="' + col + '"]' );
+  $( '[data-col]' ).mousedown( function ( event ) {
+    var cell = $( this );
 
-    colCells.toggleClass( 'excluded' );
-    colCells.toggleClass( 'included' );
-    calculateWeights();
+    event.preventDefault();
+    col = +cell.attr( 'data-col' );
+    firstCol = col;
+    colCells = cell.closest( 'table' ).find( '[data-col="' + col + '"]' );
+    mousedown = true;
+    included = cell.hasClass( 'excluded' );
+  })
+
+  .mouseenter( function () {
+    var prevCol = col,
+      prevColCells = colCells,
+      cell = $( this ),
+      toggleColCells, minCol, maxCol;
+
+    minCol = 11;
+    maxCol = 0;
+
+    col = +cell.attr( 'data-col' );
+    colCells = cell.closest( 'table' ).find( '[data-col="' + col + '"]' );
+
+    if ( mousedown && col !== prevCol && col !== firstCol ) {
+      if ( col < firstCol ) {
+
+        for ( i = 0; i < 12; i++ ) {
+          toggleColCells = cell.closest( 'table' ).find( '[data-col="' + i + '"]' );
+
+          if ( col <= i && i <= firstCol ) {
+            toggleColCells.addClass( 'table-hover' );
+          } else {
+            toggleColCells.removeClass( 'table-hover' );
+          }
+        }
+
+        minCol = col;
+
+      } else {
+
+        for ( i = 0; i < 12; i++ ) {
+          toggleColCells = cell.closest( 'table' ).find( '[data-col="' + i + '"]' );
+
+          if ( firstCol <= i && i <= col ) {
+            toggleColCells.addClass( 'table-hover' );
+          } else {
+            toggleColCells.removeClass( 'table-hover' );
+          }
+        }
+
+        maxCol = col;
+      }
+    }
+  });
+
+  $( document ).mouseup( function () {
+    if ( mousedown ) {
+      var toggleCells = $( '.table-hover' );
+
+      mousedown = false;
+      toggleCells.removeClass( 'table-hover' );
+
+      if ( included ) {
+        toggleCells.addClass( 'included' );
+        toggleCells.removeClass( 'excluded' );
+      } else {
+        toggleCells.addClass( 'excluded' );
+        toggleCells.removeClass( 'included' );
+      }
+
+      calculateWeights();
+    }
   });
 
   // Add mouse hover effect to included columns to highlight months that user can
@@ -286,7 +352,7 @@ function processData (response) {
     var column = $( this ).attr( 'data-col' ),
       columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' );
 
-    columnCells.addClass( 'table-hover' );
+    if ( !mousedown ) { columnCells.addClass( 'table-hover' ); }
   }, function () {
     var column = $( this ).attr( 'data-col' ),
       columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' );
