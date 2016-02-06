@@ -283,7 +283,7 @@ function processData (response) {
     included = cell.hasClass( 'excluded' );
   })
 
-  .mouseenter( function () {
+  .mouseover( function () {
     var prevCol = col,
       prevColCells = colCells,
       cell = $( this ),
