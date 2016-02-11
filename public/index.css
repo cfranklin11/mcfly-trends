@@ -43,7 +43,7 @@ form {
 
 #table1 th h4,h5,h6 {
   display: inline-block;
-  margin-left: 8%;
+  margin-left: 20%;
   margin-bottom: 5px;
   margin-top: 5px;
 }
@@ -85,5 +85,4 @@ td.table-hover {
 
 th[data-col] {
   cursor: pointer;
-  text-align: center;
 }
