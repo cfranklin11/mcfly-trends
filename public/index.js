@@ -272,7 +272,7 @@ function processData (response) {
 
   // Add click listener to toggle whether or not given months are included
   // in monthly weights
-  $( '[data-col]' ).mousedown( function ( event ) {
+  $( 'th[data-col]' ).mousedown( function ( event ) {
     var cell = $( this );
 
     event.preventDefault();
@@ -280,14 +280,15 @@ function processData (response) {
     firstCol = col;
     colCells = cell.closest( 'table' ).find( '[data-col="' + col + '"]' );
     mousedown = true;
-    included = cell.hasClass( 'excluded' );
+    included = cell.hasClass( 'included' );
   })
 
   .mouseover( function () {
     var prevCol = col,
       prevColCells = colCells,
       cell = $( this ),
-      toggleColCells, minCol, maxCol;
+      thisIncluded = cell.hasClass( 'included' ),
+      thatIncluded, toggleColCells, minCol, maxCol, spans;
 
     minCol = 11;
     maxCol = 0;
@@ -300,11 +301,30 @@ function processData (response) {
 
         for ( i = 0; i < 12; i++ ) {
           toggleColCells = cell.closest( 'table' ).find( '[data-col="' + i + '"]' );
+          spans = toggleColCells.find( 'span' );
+          thatIncluded = cell.closest( 'table' ).find( 'th[data-col="' + i + '"]' ).hasClass( 'included' );
 
           if ( col <= i && i <= firstCol ) {
             toggleColCells.addClass( 'table-hover' );
+
+            if ( thisIncluded ) {
+              spans.removeClass( 'glyphicon-ok-sign' );
+              spans.addClass( 'glyphicon-remove-sign' );
+            } else {
+              spans.removeClass( 'glyphicon-remove-sign' );
+              spans.addClass( 'glyphicon-ok-sign' );
+            }
+
           } else {
             toggleColCells.removeClass( 'table-hover' );
+
+            if ( thatIncluded ) {
+              spans.removeClass( 'glyphicon-remove-sign' );
+              spans.addClass( 'glyphicon-ok-sign' );
+            } else {
+              spans.removeClass( 'glyphicon-ok-sign' );
+              spans.addClass( 'glyphicon-remove-sign' );
+            }
           }
         }
 
@@ -314,11 +334,30 @@ function processData (response) {
 
         for ( i = 0; i < 12; i++ ) {
           toggleColCells = cell.closest( 'table' ).find( '[data-col="' + i + '"]' );
+          spans = toggleColCells.find( 'span' );
+          thatIncluded = cell.closest( 'table' ).find( 'th[data-col="' + i + '"]' ).hasClass( 'included' );
 
           if ( firstCol <= i && i <= col ) {
             toggleColCells.addClass( 'table-hover' );
+
+            if ( thisIncluded ) {
+              spans.removeClass( 'glyphicon-ok-sign' );
+              spans.addClass( 'glyphicon-remove-sign' );
+            } else {
+              spans.removeClass( 'glyphicon-remove-sign' );
+              spans.addClass( 'glyphicon-ok-sign' );
+            }
+
           } else {
             toggleColCells.removeClass( 'table-hover' );
+
+            if ( thatIncluded ) {
+              spans.removeClass( 'glyphicon-remove-sign' );
+              spans.addClass( 'glyphicon-ok-sign' );
+            } else {
+              spans.removeClass( 'glyphicon-ok-sign' );
+              spans.addClass( 'glyphicon-remove-sign' );
+            }
           }
         }
 
@@ -329,17 +368,25 @@ function processData (response) {
 
   $( document ).mouseup( function () {
     if ( mousedown ) {
-      var toggleCells = $( '.table-hover' );
+      var toggleCells = $( '.table-hover' ),
+        spans = $( 'th.table-hover' ).find( 'span' );
 
       mousedown = false;
       toggleCells.removeClass( 'table-hover' );
 
       if ( included ) {
-        toggleCells.addClass( 'included' );
-        toggleCells.removeClass( 'excluded' );
-      } else {
-        toggleCells.addClass( 'excluded' );
         toggleCells.removeClass( 'included' );
+        toggleCells.addClass( 'excluded' );
+
+        spans.removeClass( 'glyphicon-ok-sign' );
+        spans.addClass( 'glyphicon-remove-sign' );
+
+      } else {
+        toggleCells.removeClass( 'excluded' );
+        toggleCells.addClass( 'included' );
+
+        spans.removeClass( 'glyphicon-remove-sign' );
+        spans.addClass( 'glyphicon-ok-sign' );
       }
 
       calculateWeights();
@@ -348,17 +395,43 @@ function processData (response) {
 
   // Add mouse hover effect to included columns to highlight months that user can
   // exclude
-  $( '.included' ).hover( function () {
-    var column = $( this ).attr( 'data-col' ),
-      columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' );
+  $( 'th.included' ).hover(
+    function () {
+      var column = $( this ).attr( 'data-col' ),
+        columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' ),
+        span = $( this ).find( 'span' ),
+        included = $( this ).hasClass( 'included' );
 
-    if ( !mousedown ) { columnCells.addClass( 'table-hover' ); }
-  }, function () {
-    var column = $( this ).attr( 'data-col' ),
-      columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' );
+      if ( !mousedown ) {
+        columnCells.addClass( 'table-hover' );
 
-    columnCells.removeClass( 'table-hover' );
-  });
+        if ( included ) {
+          span.removeClass( 'glyphicon-ok-sign' );
+          span.addClass( 'glyphicon-remove-sign' );
+        } else {
+          span.removeClass( 'glyphicon-remove-sign' );
+          span.addClass( 'glyphicon-ok-sign' );
+        }
+      }
+    },
+
+    function () {
+      var column = $( this ).attr( 'data-col' ),
+        columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' ),
+        span = $( this ).find( 'span' ),
+        included = $( this ).hasClass( 'included' );
+
+      columnCells.removeClass( 'table-hover' );
+
+      if ( included ) {
+        span.removeClass( 'glyphicon-remove-sign' );
+        span.addClass( 'glyphicon-ok-sign' );
+      } else {
+        span.removeClass( 'glyphicon-ok-sign' );
+        span.addClass( 'glyphicon-remove-sign' );
+      }
+    }
+  );
 
   // Adjust table title row
   colSpan = ( colsLength + 1 ).toString();
@@ -450,6 +523,7 @@ function weightsTable ( data ) {
       tableString += '<td data-col="' + j + '" class="included" data-weight="' +
         weight + '">' + weight + '%</td>';
     }
+
     termWeight = (( termSumTotal / sumTotal ) * 100 ).toFixed( 2 );
     tableString += '<td class="included">' + termWeight + '%</td></tr>';
   }
@@ -539,6 +613,8 @@ function calculateWeights () {
 
       if ( cell.hasClass( 'included' )) {
         weightsTable[ i ].push( Number( cell.attr( 'data-weight' )));
+      } else {
+        weightsTable[ i ].push( 0 );
       }
     }
   }
@@ -581,7 +657,7 @@ function calculateWeights () {
   // to change text of table cells to reflect new weights
   for ( i = 0; i < weightsTable.length; i++ ) {
     row = $( rows[ i ]);
-    cells = row.children( '.included' );
+    cells = row.children( 'td' );
 
     for ( j = 0; j < weightsTable[ i ].length; j++ ) {
       cell = cells[ j ];
