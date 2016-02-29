@@ -132,17 +132,11 @@
         // to the row string
         for ( k = 0; k < colCount; k++ ) {
           cell = tableCells[ k ];
-          excluded = $( cell ).hasClass( 'excluded' );
+          csvContent += $( cell ).text();
 
-          // Only add columns that aren't excluded from monthly weights table
-          // (doesn't affect raw trends data table)
-          if ( !excluded ) {
-            csvContent += $( cell ).text();
-
-            // Commas to separate columns, finishing with a line break
-            // at the end of the row
-            csvContent += k < colCount - 1 ? ',' : '\n';
-          }
+          // Commas to separate columns, finishing with a line break
+          // at the end of the row
+          csvContent += k < colCount - 1 ? ',' : '\n';
         }
       }
       csvContent += '\n\n';
