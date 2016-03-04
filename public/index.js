@@ -459,12 +459,12 @@ function weightsTable ( data ) {
     i, j, term, avgTotal, termAvgTotal, key, date, month, monthAvg, avg,
     weight, termWeight;
 
-  // Loop through each search term, then add totals at the end
+  // Loop through each search term, pushing monthly means to avgs array,
+  // then add overall mean for each term at the end of the row
   for ( i = 1; i < colCount + 1; i++ ) {
     avgs.push( [] );
 
-    // Calculate mean of each month's search volume, then % difference
-    // from overall mean
+    // Calculate mean of each month's search volume
     for ( j = 0; j < 12; j++ ) {
 
       // Calculate total mean per month across all years
@@ -475,18 +475,29 @@ function weightsTable ( data ) {
         // Looping through month rows, if data month matches the loop number,
         // return the search volume. On last weights table row, calculate the mean
         // for the whole trends data row 
-        // (e.g. mean for March 2006 for allsearch terms)
+        // (e.g. mean for March 2006 for all search terms)
         if ( j === month ) {
           if ( d.c[ i ] ) {
+
+            // Monthly mean per search term
             avg = d.c[ i ].v;
           } else {
+
+            // Total mean for month
             avg = d3.mean( d.c, function ( e ) {
+
+              // Check if data exists (when trying to get data from recent
+              // months, Google Trends sometimes returns 'null' values)
               if ( e ) {
                 if ( Number.isInteger( e.v )) {
                   return e.v;
                 }
               }
             });
+
+            // To get total monthly weights, multiply monthly means by
+            // # of search terms
+            avg *= colCount - 1;
           }
           return avg;
         }
@@ -495,34 +506,32 @@ function weightsTable ( data ) {
       avgs[ i - 1 ].push( monthAvg );
     }
 
+    // Calculate overall mean for each search term
     termAvgTotal = d3.sum( avgs[ i - 1 ], function ( d ) {
       return d;
     });
     avgs[ i - 1 ].push( termAvgTotal );
   }
 
+  // Save overall average, multiplied by # of terms, to calculate weights
   avgTotal = avgs[ colCount - 1 ][ 12 ];
 
-  // Loop through each search term, then add totals at the end
+  // Loop through avgs array to build a string that will be the html table
+  // Loop through the rows
   for ( i = 1; i < colCount + 1; i++ ) {
     term = data.Kf[ i ] ? "'" + data.Kf[ i ].label + "'" : 'Monthly Weight';
     tableString += '<tr><th>' + term + '</th>';
 
-    // Calculate mean of each month's search volume, then % difference
-    // from overall mean
+    // Loop through columns (the months), calculating the weight
+    // (mean / (overall mean * # of search terms)) and adding it to the string
     for ( j = 0; j < 12; j++ ) {
-      // Calculate weight and add to table string
-      weight = (( avgs[ i - 1 ][ j ] / ( avgTotal * ( colCount - 1 ))) * 100 ).toFixed( 2 );
+      weight = (( avgs[ i - 1 ][ j ] / avgTotal) * 100 ).toFixed( 2 );
       tableString += '<td data-col="' + j + '" class="included" data-weight="' +
         weight + '">' + weight + '%</td>';
     }
 
-    if ( i = colCount ) {
-      termWeight = (( avgs[ i - 1 ][ 12 ] / avgTotal ) * 100 ).toFixed( 2 );
-    } else {
-      termWeight = (( avgs[ i - 1 ][ 12 ] / ( avgTotal * ( colCount - 1 ))) * 100 ).toFixed( 2 );
-    }
-
+    // Calculate overall term weight and add to string
+    termWeight = (( avgs[ i - 1 ][ 12 ] / avgTotal ) * 100 ).toFixed( 2 );
     tableString += '<td class="included">' + termWeight + '%</td></tr>';
   }
 
