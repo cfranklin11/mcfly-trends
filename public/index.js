@@ -207,8 +207,9 @@ function processData (response) {
     return;
   }
 
-  var data = response.getDataTable(),
-    colLabels = data.If,
+  var data = response.getDataTable();
+  console.log(data);
+    var colLabels = data.Kf,
     colsLength = colLabels.length,table2 = $( '#table2' ),
     tbody2 = table2.children( 'tbody' ),
     table1 = $( '#table1' ),
@@ -453,74 +454,87 @@ function weightsTable ( data ) {
 
   var tableData = [],
     tableString = '',
-    sums = [],
-    colCount = data.If.length,
-    i, j, term, sumTotal, termSumTotal, key, date, month, monthSum, sum,
+    avgs = [],
+    colCount = data.Kf.length,
+    i, j, term, avgTotal, termAvgTotal, key, date, month, monthAvg, avg,
     weight, termWeight;
 
-  // Loop through each search term, then add totals at the end
+  // Loop through each search term, pushing monthly means to avgs array,
+  // then add overall mean for each term at the end of the row
   for ( i = 1; i < colCount + 1; i++ ) {
-    term = data.If[ i ] ? "'" + data.If[ i ].label + "'" : 'Monthly Weight';
-    tableString += '<tr><th>' + term + '</th>';
+    avgs.push( [] );
 
-    // Calculate the mean search volume of each row's mean
-    // to get the overall mean
-    sumTotal = d3.sum( data.Jf, function ( d ) {
-
-      // Calculate search volume mean per row
-      termSumTotal = d3.sum( d.c, function ( e ) {
-        if ( Number.isInteger( e.v )) {
-          return e.v;
-        }
-      });
-      return termSumTotal;
-    });
-
-    // Save termAvgTotal to add to table later
-    if ( data.If[ i ]) {
-      termSumTotal = d3.sum( data.Jf, function ( d ) {
-        return d.c[ i ].v;
-      });
-    } else {
-      termSumTotal = sumTotal;
-    }
-
-    // Calculate mean of each month's search volume, then % difference
-    // from overall mean
+    // Calculate mean of each month's search volume
     for ( j = 0; j < 12; j++ ) {
 
       // Calculate total mean per month across all years
-      monthSum = d3.sum( data.Jf, function ( d ) {
+      monthAvg = d3.mean( data.Lf, function ( d ) {
         date = new Date( d.c[ 0 ].v );
         month = date.getMonth();
 
         // Looping through month rows, if data month matches the loop number,
         // return the search volume. On last weights table row, calculate the mean
         // for the whole trends data row 
-        // (e.g. mean for March 2006 for allsearch terms)
+        // (e.g. mean for March 2006 for all search terms)
         if ( j === month ) {
           if ( d.c[ i ] ) {
-            sum = d.c[ i ].v;
+
+            // Monthly mean per search term
+            avg = d.c[ i ].v;
           } else {
-            sum = d3.sum( d.c, function ( e ) {
-              if ( Number.isInteger( e.v )) {
-                return e.v;
+
+            // Total mean for month
+            avg = d3.mean( d.c, function ( e ) {
+
+              // Check if data exists (when trying to get data from recent
+              // months, Google Trends sometimes returns 'null' values)
+              if ( e ) {
+                if ( Number.isInteger( e.v )) {
+                  return e.v;
+                }
               }
             });
+
+            // To get total monthly weights, multiply monthly means by
+            // # of search terms
+            avg *= colCount - 1;
           }
-          return sum;
+          return avg;
         }
       });
 
-      // Calculate weight and add to table string
-      weight = (( monthSum / sumTotal ) * 100 ).toFixed( 2 );
+      avgs[ i - 1 ].push( monthAvg );
+    }
+
+    // Calculate overall mean for each search term
+    termAvgTotal = d3.sum( avgs[ i - 1 ], function ( d ) {
+      return d;
+    });
+    avgs[ i - 1 ].push( termAvgTotal );
+  }
+
+  // Save overall average, multiplied by # of terms, to calculate weights
+  avgTotal = avgs[ colCount - 1 ][ 12 ];
+
+  // Loop through avgs array to build a string that will be the html table
+  // Loop through the rows
+  for ( i = 1; i < colCount + 1; i++ ) {
+    term = data.Kf[ i ] ? "'" + data.Kf[ i ].label + "'" : 'Monthly Weight';
+    tableString += '<tr><th>' + term + '</th>';
+
+    // Loop through columns (the months), calculating the weight
+    // (mean / (overall mean * # of search terms)) and adding it to the string
+    for ( j = 0; j < 12; j++ ) {
+      weight = (( avgs[ i - 1 ][ j ] / avgTotal) * 100 ).toFixed( 2 );
       tableString += '<td data-col="' + j + '" class="included" data-weight="' +
         weight + '">' + weight + '%</td>';
     }
 
-    termWeight = (( termSumTotal / sumTotal ) * 100 ).toFixed( 2 );
+    // Calculate overall term weight and add to string
+    termWeight = (( avgs[ i - 1 ][ 12 ] / avgTotal ) * 100 ).toFixed( 2 );
     tableString += '<td class="included">' + termWeight + '%</td></tr>';
   }
+
   return tableString;
 }
 
@@ -528,9 +542,9 @@ function weightsTable ( data ) {
 function trendsTable ( data ) {
   'use strict';
 
-  var colLabels = data.If,
+  var colLabels = data.Kf,
     colsLength = colLabels.length,
-    rows = data.Jf,
+    rows = data.Lf,
     rowsLength = rows.length,
     termsArray = [],
     tableString = '<tr><th>Year</th><th>Month</th>',
@@ -575,7 +589,9 @@ function trendsTable ( data ) {
 
     // Create a new cell in table per data point in row
     for ( j = 1; j < colsLength; j++ ) {
-      tableString += '<td>' + rowData[ j ].f + '</td>';
+      if ( rowData[ j ]) {
+        tableString += '<td>' + rowData[ j ].f + '</td>';
+      }
     }
 
     // Close the row
