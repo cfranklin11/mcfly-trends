@@ -34,8 +34,18 @@ var bbApp = bbApp || {};
         submitBtn.prop('disabled', true);
       }
     },
-    queryGoogleTrends: function() {
+    queryGoogleTrends: function(event) {
+      event.preventDefault();
+      var form, action, searchTerms, country, startDate, endDate;
 
+      form = $('form');
+      action = form.attr('action');
+      searchTerms = form.find('input[name=terms]').val();
+      country = form.find('select[name=country]').val();
+      startDate = form.find('input[name=start]').val();
+      endDate = form.find('input[name=end]').val();
+
+      bbApp.GoogleHelper.createQuery(action, searchTerms, country, startDate, endDate);
     }
   });
 })(jQuery);
