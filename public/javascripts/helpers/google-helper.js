@@ -71,6 +71,7 @@ var bbApp = bbApp || {};
           '&cid=TIMESERIES_GRAPH_0&export=3';
       callUrl = url + params;
 
+      console.log(callUrl);
       // getData(callUrl);
     }
   }
