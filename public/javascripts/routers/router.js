@@ -6,7 +6,7 @@ var bbApp = bbApp || {};
   var AccountRouter = Backbone.Router.extend({
     routes: {
       '': 'index',
-      ':terms': 'trends'
+      ':query': 'trends'
     },
     start: function() {
       Backbone.history.start();
@@ -14,8 +14,14 @@ var bbApp = bbApp || {};
     index: function() {
       this.formView = new bbApp.FormView();
     },
-    trends: function() {
+    trends: function(query) {
+      var callParams, callUrl;
 
+      console.log(query);
+
+      callParams = '?' + query + '&cid=TIMESERIES_GRAPH_0&export=3';
+      callUrl = 'https://www.google.com/trends/fetchComponent' + callParams;
+      bbApp.GoogleHelper.getData(callUrl);
     }
   });
 
