@@ -101,13 +101,13 @@
 //// DATA PROCESSING ////
 /////////////////////////
 
-// Make call to Google Trends
-function getData ( url ) {
-  'use strict';
+// // Make call to Google Trends
+// function getData ( url ) {
+//   'use strict';
 
-  var query = new google.visualization.Query( url );
-  query.send( processData );
-}
+//   var query = new google.visualization.Query( url );
+//   query.send( processData );
+// }
 
 // Query callback to process the data object
 function processData (response) {

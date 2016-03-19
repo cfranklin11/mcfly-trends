@@ -72,7 +72,13 @@ var bbApp = bbApp || {};
       callUrl = url + params;
 
       console.log(callUrl);
-      // getData(callUrl);
+      this.getData(callUrl);
+    },
+    // Make call to Google Trends
+    getData: function(url) {
+      var query;
+      query = new google.visualization.Query(url);
+      query.send(bbApp.d3Helper.processData);
     }
-  }
+  };
 })(google);
