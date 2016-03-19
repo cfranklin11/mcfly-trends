@@ -13,6 +13,9 @@ var bbApp = bbApp || {};
     },
     index: function() {
       this.formView = new bbApp.FormView();
+    },
+    trends: function() {
+
     }
   });
 

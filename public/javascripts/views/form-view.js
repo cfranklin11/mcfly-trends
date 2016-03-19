@@ -36,7 +36,8 @@ var bbApp = bbApp || {};
     },
     queryGoogleTrends: function(event) {
       event.preventDefault();
-      var form, action, searchTerms, country, startDate, endDate;
+      var form, action, searchTerms, country, startDate, endDate, termsArray,
+        termString;
 
       form = $('form');
       action = form.attr('action');
@@ -45,6 +46,10 @@ var bbApp = bbApp || {};
       startDate = form.find('input[name=start]').val();
       endDate = form.find('input[name=end]').val();
 
+      termString = searchTerms.replace(/,\s*/g, '-');
+      termString = termString.replace(/\s+/g, '+');
+
+      bbApp.AccountRouter.navigate('#/' + termString);
       bbApp.GoogleHelper.createQuery(action, searchTerms, country, startDate, endDate);
     }
   });
