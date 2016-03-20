@@ -5,7 +5,7 @@ var bbApp = bbApp || {};
 // Create an individual account row for the accounts table
 (function($) {
   bbApp.FormView = Backbone.View.extend({
-    el: $('#outer-div'),
+    el: $('#form-div'),
     tagName: 'div',
     className: 'row',
     template: _.template($('#form-view').html()),
