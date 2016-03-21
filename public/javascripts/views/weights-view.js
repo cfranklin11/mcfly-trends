@@ -181,7 +181,7 @@ var bbApp = bbApp || {};
           spans.addClass( 'glyphicon-ok-sign' );
         }
 
-        calculateWeights();
+        bbApp.d3Helper.recalculateWeights();
       }
     },
     highlightColumns: function() {

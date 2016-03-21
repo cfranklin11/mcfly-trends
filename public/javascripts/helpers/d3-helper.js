@@ -36,9 +36,8 @@ var bbApp = bbApp || {};
         }
       }
 
-      // // Process data to get monthly weights table
-      // weightsString = weightsTable( data );
-      // tbody1.append( weightsString );
+      // Process data to get monthly weights table
+      weightsString = this.calculateWeights( data );
 
       // // Process data to get raw trends table
       // trendsString = trendsTable( data );
@@ -327,7 +326,7 @@ var bbApp = bbApp || {};
 
       console.log(avgs);
     },
-    calculateWeights: function() {
+    recalculateWeights: function() {
       var table = $( '#table1' ),
         tbody = table.children( 'tbody' ),
         rows = tbody.children( 'tr:not(:first)' ),
