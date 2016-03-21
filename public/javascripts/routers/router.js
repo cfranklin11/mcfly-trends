@@ -6,7 +6,7 @@ var bbApp = bbApp || {};
   var AccountRouter = Backbone.Router.extend({
     routes: {
       '': 'index',
-      ':query': 'trends'
+      ':query': 'getTrends'
     },
     start: function() {
       Backbone.history.start();
@@ -14,7 +14,7 @@ var bbApp = bbApp || {};
     index: function() {
       this.formView = new bbApp.FormView();
     },
-    trends: function(query) {
+    getTrends: function(query) {
       var callParams, callUrl;
 
       console.log(query);

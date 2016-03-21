@@ -21,6 +21,11 @@ var bbApp = bbApp || {};
       var attributes = this.model.toJSON();
       this.$el.html( this.template( attributes ));
 
+            // Adjust table title row
+      colSpan = ( colsLength + 1 ).toString();
+      table2.find( 'tr' ).first().children( 'th' ).attr( 'colspan', colSpan );
+
+
       return this;
     }
   });
