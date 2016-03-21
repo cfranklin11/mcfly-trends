@@ -54,7 +54,15 @@ var bbApp = bbApp || {};
         termsString + '.');
       this.$el.find( 'h3' ).last().text( message );
 
+      this.collection.each(this.addOne, this);
+
       return this;
+    },
+    addOne: function(weight) {
+      var weightView;
+
+      weightView = new bbApp.WeightView({model: weight});
+      this.$el.find('tbody').append(weightView.render().el);
     },
     selectMonths: function() {
       var cell, col, firstCol, colCells, included;

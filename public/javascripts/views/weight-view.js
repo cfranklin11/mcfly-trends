@@ -8,11 +8,7 @@ var bbApp = bbApp || {};
     el: $('#weights-div'),
     tagName: 'div',
     className: 'row',
-    template: _.template($('#form-view').html()),
-    events: {
-      'keyup #terms': 'toggleSubmitBtn',
-      'submit form': 'queryGoogleTrends'
-    },
+    template: _.template($('#weight-view').html()),
     initialize: function() {
       this.render();
     },
