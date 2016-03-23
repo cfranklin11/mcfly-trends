@@ -58,11 +58,12 @@ var bbApp = bbApp || {};
         });
       }
 
-      console.log(bbApp.weights.models);
-      // // Reveal data tables and auto-scroll down
-      // csvDiv.removeClass( 'hidden' );
-      // scrollTarget = csvDiv[ 0 ].offsetTop;
-      // $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
+      // Reveal data tables and auto-scroll down
+      // bbApp.appRouter.getWeightsTable();
+
+      scrollTarget = csvDiv[ 0 ].offsetTop;
+      $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
+
       function calculatePercent (value, array) {
         var total, percent;
 
