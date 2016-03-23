@@ -52,6 +52,8 @@ var bbApp = bbApp || {};
           termPercent: termPercent
         });
       }
+
+      console.log(bbApp.weights.models);
       // // Reveal data tables and auto-scroll down
       // csvDiv.removeClass( 'hidden' );
       // scrollTarget = csvDiv[ 0 ].offsetTop;
