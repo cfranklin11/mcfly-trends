@@ -24,13 +24,18 @@ var bbApp = bbApp || {};
       totalWeight = 0;
       weights = bbApp.weights;
 
+      weights.reset();
+
       for (i = 1; i < colsLength + 1; i++) {
         termString = self.createTermsArray(data, i);
 
         // Process data to get monthly weights table
         weightsArray = self.calculateWeights(data, colsLength, i);
         termWeight = weightsArray.pop();
-        totalWeight += termWeight;
+
+        if (i !== colsLength) {
+          totalWeight += termWeight;
+        }
 
         weights.add({
           term: termString,
@@ -44,8 +49,8 @@ var bbApp = bbApp || {};
         modelAttr = model.attributes;
         modelWeights = modelAttr.monthWeights;
 
-        modelPercents = modelWeights.map(self.calculatePercent);
-        termPercent = self.calculatePercent(modelAttr.termWeight, j, modelWeights);
+        modelPercents = modelWeights.map(calculatePercent);
+        termPercent = calculatePercent(modelAttr.termWeight, modelWeights);
 
         model.set({
           monthPercents: modelPercents,
@@ -58,7 +63,16 @@ var bbApp = bbApp || {};
       // csvDiv.removeClass( 'hidden' );
       // scrollTarget = csvDiv[ 0 ].offsetTop;
       // $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
+      function calculatePercent (value, array) {
+        var total, percent;
 
+        total = totalWeight;
+        percent = ((value / total) * 100).toFixed(2);
+
+        console.log(percent);
+
+        return percent;
+      }
     },
     createTermsArray: function(data, i) {
       return data.Kf[ i ] ? "'" + data.Kf[ i ].label + "'" : 'Monthly Weight';
@@ -118,13 +132,6 @@ var bbApp = bbApp || {};
       avgs.push( termAvgTotal );
 
       return avgs;
-    },
-    calculatePercent: function(value, i, array) {
-      var total;
-      total = d3.sum(array, function(d) {
-        return d;
-      });
-      return ((value / total) * 100).toFixed(2);
     },
     recalculatePercents: function() {
       var table = $( '#table1' ),
