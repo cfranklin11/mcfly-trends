@@ -3,7 +3,7 @@
 var bbApp = bbApp || {};
 
 (function () {
-  var AccountRouter = Backbone.Router.extend({
+  var AppRouter = Backbone.Router.extend({
     routes: {
       '': 'index',
       ':query': 'getTrends'
@@ -22,8 +22,11 @@ var bbApp = bbApp || {};
       callParams = '?' + query + '&cid=TIMESERIES_GRAPH_0&export=3';
       callUrl = 'https://www.google.com/trends/fetchComponent' + callParams;
       bbApp.GoogleHelper.getData(callUrl);
+    },
+    getWeightsTable: function() {
+
     }
   });
 
-  bbApp.AccountRouter = new AccountRouter();
+  bbApp.appRouter = new AppRouter();
 })();

@@ -10,7 +10,7 @@ var bbApp = bbApp || {};
     getData: function(url) {
       var query;
       query = new google.visualization.Query(url);
-      query.send(bbApp.d3Helper.processData);
+      query.send(bbApp.D3Helper.processData);
     }
   };
 })(google);

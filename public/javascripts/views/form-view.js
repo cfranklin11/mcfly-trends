@@ -106,7 +106,7 @@ var bbApp = bbApp || {};
       // Join URL parameter strings, then create the router path
       params = queryUrl + geoUrl + dateUrl;
       routePath = params;
-      bbApp.AccountRouter.navigate('#/' + params, {trigger: true});
+      bbApp.appRouter.navigate('#/' + params, {trigger: true});
     },
   });
 })(jQuery);

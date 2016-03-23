@@ -2,7 +2,7 @@
 
 var bbApp = bbApp || {};
 
-(function () {
+(function() {
   var Weights = Backbone.Collection.extend({
     model: bbApp.Weight
   });

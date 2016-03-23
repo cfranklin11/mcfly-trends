@@ -11,7 +11,8 @@ var bbApp = bbApp || {};
       'th[data-col] mousedown': 'selectMonths',
       'th[data-col] mouseover': 'highlightMonths',
       'document mouseup': 'toggleMonths',
-      'th.included': 'highlightColumns'
+      'th.included mouseenter': 'highlightColumns',
+      'th.included mouseleave': 'unhighlightColumns'
     },
     mousedown: false,
     initialize: function() {
@@ -184,45 +185,38 @@ var bbApp = bbApp || {};
         bbApp.d3Helper.recalculateWeights();
       }
     },
-    highlightColumns: function() {
-      var self;
+    highlightColumns: function () {
+      var column = $( this ).attr( 'data-col' ),
+        columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' ),
+        span = $( this ).find( 'span' ),
+        included = $( this ).hasClass( 'included' );
 
-      self = this;
-
-      function () {
-        var column = $( this ).attr( 'data-col' ),
-          columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' ),
-          span = $( this ).find( 'span' ),
-          included = $( this ).hasClass( 'included' );
-
-        if ( !self.mousedown ) {
-          columnCells.addClass( 'table-hover' );
-
-          if ( included ) {
-            span.removeClass( 'glyphicon-ok-sign' );
-            span.addClass( 'glyphicon-remove-sign' );
-          } else {
-            span.removeClass( 'glyphicon-remove-sign' );
-            span.addClass( 'glyphicon-ok-sign' );
-          }
-        }
-      },
-
-      function () {
-        var column = $( this ).attr( 'data-col' ),
-          columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' ),
-          span = $( this ).find( 'span' ),
-          included = $( this ).hasClass( 'included' );
-
-        columnCells.removeClass( 'table-hover' );
+      if ( !self.mousedown ) {
+        columnCells.addClass( 'table-hover' );
 
         if ( included ) {
-          span.removeClass( 'glyphicon-remove-sign' );
-          span.addClass( 'glyphicon-ok-sign' );
-        } else {
           span.removeClass( 'glyphicon-ok-sign' );
           span.addClass( 'glyphicon-remove-sign' );
+        } else {
+          span.removeClass( 'glyphicon-remove-sign' );
+          span.addClass( 'glyphicon-ok-sign' );
         }
+      }
+    },
+    unhighlightColumns: function() {
+      var column = $( this ).attr( 'data-col' ),
+        columnCells = $( '#table1' ).find( '[data-col="' + column + '"]' ),
+        span = $( this ).find( 'span' ),
+        included = $( this ).hasClass( 'included' );
+
+      columnCells.removeClass( 'table-hover' );
+
+      if ( included ) {
+        span.removeClass( 'glyphicon-remove-sign' );
+        span.addClass( 'glyphicon-ok-sign' );
+      } else {
+        span.removeClass( 'glyphicon-ok-sign' );
+        span.addClass( 'glyphicon-remove-sign' );
       }
     }
   });

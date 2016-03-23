@@ -3,6 +3,6 @@
 var bbApp = bbApp || {};
 
 $(function () {
-  bbApp.AccountRouter.start();
+  bbApp.appRouter.start();
 });
 

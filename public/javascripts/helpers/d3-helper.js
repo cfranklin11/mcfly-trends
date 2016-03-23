@@ -4,12 +4,12 @@ var bbApp = bbApp || {};
 
 (function(d3, $) {
 
-  bbApp.d3Helper = {
+  bbApp.D3Helper = {
 
     // Query callback to process the data object
     processData: function(response) {
-      var data, colsLength, totalWeight, weights, i, termString, weightsArray,
-        termWeight, model, modelWeights, modelPercents, termPercent;
+      var self, data, colsLength, totalWeight, weights, i, termString, weightsArray,
+        termWeight, model, modelAttr, modelWeights, modelPercents, termPercent, j;
 
       // Handle errors
       if (response.isError()) {
@@ -18,20 +18,19 @@ var bbApp = bbApp || {};
         return;
       }
 
+      self = bbApp.D3Helper;
       data = response.getDataTable();
       colsLength = data.Kf.length;
       totalWeight = 0;
       weights = bbApp.weights;
 
       for (i = 1; i < colsLength + 1; i++) {
-        termString = this.createTermsArray(data, i);
+        termString = self.createTermsArray(data, i);
 
         // Process data to get monthly weights table
-        weightsArray = this.calculateWeights(data, colsLength, i);
-        termWeight = d3.sum(weightsArray, sumCalc(d));
+        weightsArray = self.calculateWeights(data, colsLength, i);
+        termWeight = weightsArray.pop();
         totalWeight += termWeight;
-
-        console.log(weightsArray);
 
         weights.add({
           term: termString,
@@ -41,11 +40,12 @@ var bbApp = bbApp || {};
       }
 
       for (i = 0; i < weights.length; i++) {
-        model = weights[i];
-        modelWeights = model.monthWeights;
+        model = weights.models[i];
+        modelAttr = model.attributes;
+        modelWeights = modelAttr.monthWeights;
 
-        modelPercents = modelWeights.map(this.calculatePercent(value, modelWeights));
-        termPercent = this.calculatePercent(model.termWeight, modelWeights);
+        modelPercents = modelWeights.map(self.calculatePercent);
+        termPercent = self.calculatePercent(modelAttr.termWeight, j, modelWeights);
 
         model.set({
           monthPercents: modelPercents,
@@ -57,9 +57,6 @@ var bbApp = bbApp || {};
       // scrollTarget = csvDiv[ 0 ].offsetTop;
       // $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
 
-      function sumCalc(d) {
-        return d;
-      }
     },
     createTermsArray: function(data, i) {
       return data.Kf[ i ] ? "'" + data.Kf[ i ].label + "'" : 'Monthly Weight';
@@ -68,62 +65,57 @@ var bbApp = bbApp || {};
       var tableData, tableString, avgs, j, monthAvg, date, month, avg,
         termAvgTotal;
 
-      tableData = [];
-      tableString = '';
       avgs = [];
 
       // Calculate mean of each month's search volume
       for ( j = 0; j < 12; j++ ) {
 
         // Calculate total mean per month across all years
-        monthAvg = d3.mean( data.Lf, monthAvgCalc(d));
-        avgs[ i - 1 ].push( monthAvg );
+        monthAvg = d3.mean( data.Lf, function(d) {
+          date = new Date( d.c[ 0 ].v );
+          month = date.getMonth();
+
+          // Looping through month rows, if data month matches the loop number,
+          // return the search volume. On last weights table row, calculate the mean
+          // for the whole trends data row
+          // (e.g. mean for March 2006 for all search terms)
+          if ( j === month ) {
+            if ( d.c[ i ] ) {
+
+              // Monthly mean per search term
+              avg = d.c[ i ].v;
+            } else {
+
+              // Total mean for month
+              avg = d3.mean( d.c, function(e) {
+                // Check if data exists (when trying to get data from recent
+                // months, Google Trends sometimes returns 'null' values)
+                if (e) {
+                  if ( Number.isInteger( e.v )) {
+                    return e.v;
+                  }
+                }
+              });
+
+              // To get total monthly weights, multiply monthly means by
+              // # of search terms
+              avg *= length - 1;
+            }
+            return avg;
+          }
+        });
+
+        avgs.push( monthAvg );
       }
 
       // Calculate overall mean for each search term
-      termAvgTotal = d3.sum( avgs[ i - 1 ], function ( d ) {
+      termAvgTotal = d3.sum( avgs, function ( d ) {
         return d;
       });
-      avgs[ i - 1 ].push( termAvgTotal );
 
-      console.log(avgs);
+      avgs.push( termAvgTotal );
+
       return avgs;
-
-      function monthAvgCalc(d) {
-        date = new Date( d.c[ 0 ].v );
-        month = date.getMonth();
-
-        // Looping through month rows, if data month matches the loop number,
-        // return the search volume. On last weights table row, calculate the mean
-        // for the whole trends data row
-        // (e.g. mean for March 2006 for all search terms)
-        if ( j === month ) {
-          if ( d.c[ i ] ) {
-
-            // Monthly mean per search term
-            avg = d.c[ i ].v;
-          } else {
-
-            // Total mean for month
-            avg = d3.mean( d.c, avgCalc(e));
-
-            // To get total monthly weights, multiply monthly means by
-            // # of search terms
-            avg *= length - 1;
-          }
-          return avg;
-        }
-      }
-
-      function avgCalc(d) {
-        // Check if data exists (when trying to get data from recent
-        // months, Google Trends sometimes returns 'null' values)
-        if ( d ) {
-          if ( Number.isInteger( d.v )) {
-            return d.v;
-          }
-        }
-      }
     },
     calculatePercent: function(value, i, array) {
       var total;
@@ -180,7 +172,9 @@ var bbApp = bbApp || {};
       for ( j = 0; j < weightsTable[ 0 ].length; j++ ) {
 
         // Calculate total mean per month across all years
-        monthSum = d3.sum( weightsTable, sumCalc(d));
+        monthSum = d3.sum( weightsTable, function(d) {
+          return d[j];
+        });
 
         weightsTable[ weightsTable.length - 1 ].push( monthSum );
       }
@@ -198,10 +192,6 @@ var bbApp = bbApp || {};
           value = (( weightsTable[ i ][ j ] / sumTotal ) * 100 ).toFixed( 2 );
           $( cell ).text( value + '%' );
         }
-      }
-
-      function sumCalc(d) {
-        return d[j];
       }
     }
   };
