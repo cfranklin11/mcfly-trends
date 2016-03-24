@@ -5,7 +5,6 @@ var bbApp = bbApp || {};
 (function($) {
   bbApp.WeightsView = Backbone.View.extend({
     el: $('#weights-div'),
-    tagName: 'div',
     template: _.template($('#weights-view').html()),
     events: {
       'th[data-col] mousedown': 'selectMonths',
