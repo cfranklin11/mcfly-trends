@@ -22,38 +22,7 @@ var bbApp = bbApp || {};
       var i, messages, messageCount, message, weights, term, termsArray,
         termsString, weightsLength;
 
-      messages = [
-        'Enjoy!',
-        'Rock on!',
-        'Keep it real!',
-        'Wango the tango!',
-        'Buen provecho!',
-        'Bon appetit!',
-        'Bom proveito!',
-        "L'chaim!",
-        'Cheers!',
-        'Salud!',
-        'Salut!',
-        'Seize the day!',
-        'Everyday!',
-        'Booyah!',
-        'Hoowah!'
-      ];
-      messageCount = messages.length;
-      message = messages[ Math.floor( Math.random() * messageCount )];
-      termsArray = [];
-      weights = bbApp.weights;
-      weightsLength = weights.length;
-
-      for (i = 0; i < weightsLength; i++) {
-        termsArray.push(weights[i]['term']);
-      }
-      termsString = termsArray.join( ', ' );
-
       this.$el.html(this.template());
-      this.$el.find( 'h3' ).first().text( "Here's your trends data for " +
-        termsString + '.');
-      this.$el.find( 'h3' ).last().text( message );
 
       this.collection.each(this.addOne, this);
 

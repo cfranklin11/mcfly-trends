@@ -41,15 +41,17 @@
     </div>
 
     <div id="outer-div">
-      <div id="form-div">
+      <div class="row" id="form-div">
       </div>
       <div class="container" id="data-div">
-        <div id="nav-div">
+        <div class="row text-center" id="nav-div">
         </div>
-        <div id="weights-div">
-        </div>
-        <div id="trends-div">
-        </div>
+        <main>
+          <div id="weights-div">
+          </div>
+          <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2" id="trends-div">
+          </div>
+        </main>
       </div>
     </div>
 
@@ -87,11 +89,10 @@
     </script>
 
     <!-- NAV VIEW -->
-    <script type="text/template" id="nav-view">
-      <h3></h3>
-      <h3></h3>
-
-      <div id="nav-div">
+    <script type="text/template" class="row text-center" id="nav-view">
+      <h3>Here's your trends data for <%= terms %></h3>
+      <h3><%= message %></h3>
+      <div id="nav-bar">
         <nav class="navbar navbar-default">
           <div class="col-sm-6 col-sm-offset-3">
             <button id="csv" class="btn btn-lg navbar-btn btn-success">Download CSV</button>
@@ -116,18 +117,18 @@
         <tbody>
           <tr>
             <th>Search Term</th>
-            <th data-col="0" class="included">Jan    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="1" class="included">Feb    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="2" class="included">Mar    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="3" class="included">Apr    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="4" class="included">May    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="5" class="included">Jun    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="6" class="included">Jul    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="7" class="included">Aug    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="8" class="included">Sep    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="9" class="included">Oct    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="10" class="included">Nov    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="11" class="included">Dec    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="0" class="included">Jan<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="1" class="included">Feb<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="2" class="included">Mar<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="3" class="included">Apr<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="4" class="included">May<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="5" class="included">Jun<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="6" class="included">Jul<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="7" class="included">Aug<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="8" class="included">Sep<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="9" class="included">Oct<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="10" class="included">Nov<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
+            <th data-col="11" class="included">Dec<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
             <th class="included">Weight by Term</th>
           </tr>
         </tbody>
@@ -136,39 +137,35 @@
 
     <!-- WEIGHT VIEW -->
     <script type="text/template" id="weight-view">
-      <tr>
-        <th><%= term %></th>
-        <td data-col="0" data-weight=<%= '"' + monthWeight[0] + '"' %> class="included"><%= monthPercents[0] %></td>
-        <td data-col="1" data-weight=<%= '"' + monthWeights[1] + '"' %> class="included"><%= monthPercents[1] %></td>
-        <td data-col="2" data-weight=<%= '"' + monthWeights[2] + '"' %> class="included"><%= monthPercents[2] %></td>
-        <td data-col="3" data-weight=<%= '"' + monthWeights[3] + '"' %> class="included"><%= monthPercents[3] %></td>
-        <td data-col="4" data-weight=<%= '"' + monthWeights[4] + '"' %> class="included"><%= monthPercents[4] %></td>
-        <td data-col="5" data-weight=<%= '"' + monthWeights[5] + '"' %> class="included"><%= monthPercents[5] %></td>
-        <td data-col="6" data-weight=<%= '"' + monthWeights[6] + '"' %> class="included"><%= monthPercents[6] %></td>
-        <td data-col="7" data-weight=<%= '"' + monthWeights[7] + '"' %> class="included"><%= monthPercents[7] %></td>
-        <td data-col="8" data-weight=<%= '"' + monthWeights[8] + '"' %> class="included"><%= monthPercents[8] %></td>
-        <td data-col="9" data-weight=<%= '"' + monthWeights[9] + '"' %> class="included"><%= monthPercents[9] %></td>
-        <td data-col="10" data-weight=<%= '"' + monthWeights[10] + '"' %> class="included"><%= monthPercents[10] %></td>
-        <td data-col="11" data-weight=<%= '"' + monthWeights[11] + '"' %> class="included"><%= monthPercents[11] %></td>
-        <td class="included"><%= totalPercent %></td>
-      </tr>
+      <th><%= term %></th>
+      <td data-col="0" data-weight=<%= '"' + monthWeights[0] + '"' %> class="included"><%= monthPercents[0] %></td>
+      <td data-col="1" data-weight=<%= '"' + monthWeights[1] + '"' %> class="included"><%= monthPercents[1] %></td>
+      <td data-col="2" data-weight=<%= '"' + monthWeights[2] + '"' %> class="included"><%= monthPercents[2] %></td>
+      <td data-col="3" data-weight=<%= '"' + monthWeights[3] + '"' %> class="included"><%= monthPercents[3] %></td>
+      <td data-col="4" data-weight=<%= '"' + monthWeights[4] + '"' %> class="included"><%= monthPercents[4] %></td>
+      <td data-col="5" data-weight=<%= '"' + monthWeights[5] + '"' %> class="included"><%= monthPercents[5] %></td>
+      <td data-col="6" data-weight=<%= '"' + monthWeights[6] + '"' %> class="included"><%= monthPercents[6] %></td>
+      <td data-col="7" data-weight=<%= '"' + monthWeights[7] + '"' %> class="included"><%= monthPercents[7] %></td>
+      <td data-col="8" data-weight=<%= '"' + monthWeights[8] + '"' %> class="included"><%= monthPercents[8] %></td>
+      <td data-col="9" data-weight=<%= '"' + monthWeights[9] + '"' %> class="included"><%= monthPercents[9] %></td>
+      <td data-col="10" data-weight=<%= '"' + monthWeights[10] + '"' %> class="included"><%= monthPercents[10] %></td>
+      <td data-col="11" data-weight=<%= '"' + monthWeights[11] + '"' %> class="included"><%= monthPercents[11] %></td>
+      <td class="included"><%= termPercent %></td>
     </script>
 
     <!-- TRENDS TABLE -->
     <script type="text/template" id="trends-view">
-      <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-        <table id="table2" class="table table-bordered table-condensed">
-          <thead>
-            <tr>
-              <th class="text-center">
-                <h4>Raw Google Trends Data</h4>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+      <table id="table2" class="table table-bordered table-condensed">
+        <thead>
+          <tr>
+            <th class="text-center">
+              <h4>Raw Google Trends Data</h4>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </script>
 
     <!-- jQuery Library -->
@@ -185,6 +182,7 @@
     <script src="javascripts/index.js"></script>
     <script src="javascripts/helpers/d3-helper.js"></script>
     <script src="javascripts/helpers/google-helper.js"></script>
+    <script src="javascripts/models/nav.js"></script>
     <script src="javascripts/models/weight.js"></script>
     <script src="javascripts/collections/weights.js"></script>
     <script src="javascripts/routers/router.js"></script>

@@ -5,8 +5,6 @@ var bbApp = bbApp || {};
 (function($) {
   bbApp.NavView = Backbone.View.extend({
     el: $('#nav-div'),
-    tagName: 'div',
-    className: 'row text-center',
     template: _.template($('#nav-view').html()),
     events: {
       '#csv click': 'createCsv',
@@ -18,7 +16,10 @@ var bbApp = bbApp || {};
       this.render();
     },
     render: function() {
-      this.$el.html(this.template());
+      var attributes;
+
+      attributes = this.model.toJSON();
+      this.$el.html(this.template(attributes));
       return this;
     },
     createCsv: function() {
@@ -92,7 +93,7 @@ var bbApp = bbApp || {};
     toggleNav: function() {
       var navDiv, nav, navDivPos, browserPos;
 
-        navDiv = $( '#nav-div' );
+        navDiv = $( '#nav-bar' );
         nav = $( 'nav' );
         navDivPos = navDiv[ 0 ].offsetTop;
         browserPos = window.pageYOffset;

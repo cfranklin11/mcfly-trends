@@ -6,8 +6,6 @@ var bbApp = bbApp || {};
 (function($) {
   bbApp.FormView = Backbone.View.extend({
     el: $('#form-div'),
-    tagName: 'div',
-    className: 'row',
     template: _.template($('#form-view').html()),
     events: {
       'keyup #terms': 'toggleSubmitBtn',
