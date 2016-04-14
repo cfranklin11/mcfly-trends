@@ -23,7 +23,8 @@ var bbApp = bbApp || {};
       this.$el.find( 'th' ).first().attr( 'colspan', colSpan );
 
       for (i = 0; i < this.termCount; i++) {
-        this.$el.find('tr:nth-child(2)').append('<th>' + this.terms[i] + '</th>');
+        console.log(this.terms[i])
+        this.$el.find('thead').find('tr:nth-child(2)').append('<th>' + this.terms[i] + '</th>');
       }
     },
     addOne: function(trend) {

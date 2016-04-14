@@ -99,7 +99,7 @@ var bbApp = bbApp || {};
 
       // Join URL parameter strings, then create the router path
       params = queryUrl + geoUrl + dateUrl;
-      bbApp.GoogleHelper.getData(params);
+      bbApp.dataHelper.getData(params);
     },
     render: function() {
       this.$el.html(this.template());

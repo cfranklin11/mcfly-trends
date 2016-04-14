@@ -4,7 +4,7 @@ var bbApp = bbApp || {};
 
 (function(google) {
 
-  bbApp.GoogleHelper = {
+  bbApp.dataHelper = {
 
     // Make call to Google Trends
     getData: function(params) {
@@ -14,7 +14,7 @@ var bbApp = bbApp || {};
       callUrl = 'https://www.google.com/trends/fetchComponent' + callParams;
 
       query = new google.visualization.Query(callUrl);
-      query.send(bbApp.GoogleHelper.processData);
+      query.send(bbApp.dataHelper.processData);
     },
     // Query callback to process the data object
     processData: function(response) {
@@ -39,7 +39,7 @@ var bbApp = bbApp || {};
       weights.reset();
 
       for (i = 1; i < colsLength + 1; i++) {
-        // termString = d3Helper.createTermsArray(data, i);
+        termString = d3Helper.createTermsArray(data, i);
 
         // Process data to get monthly weights table
         weightsArray = d3Helper.calculateWeights(data, colsLength, i);
