@@ -37,7 +37,7 @@ var bbApp = bbApp || {};
           if (weightsLength > 3) {
             termString += model.attributes.term + ', ';
           } else {
-            termString += model.attributes.term;
+            termString += model.attributes.term + ' ';
           }
         }
       }
