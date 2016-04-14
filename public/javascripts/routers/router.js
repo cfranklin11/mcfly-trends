@@ -14,11 +14,13 @@ var bbApp = bbApp || {};
       this.formView = new bbApp.FormView();
     },
     getWeightsTable: function() {
-      var weights, weightsLength, i, model, termString, weightsDiv, scrollTarget;
+      var weights, weightsLength, weightsArray, i, model, termString,
+        weightsDiv, scrollTarget;
 
       termString = '';
       weights = bbApp.weights;
       weightsLength = weights.length;
+      weightsArray = [];
 
       for (i = 0; i < weightsLength - 1; i++) {
         model = weights.models[i];
@@ -31,21 +33,22 @@ var bbApp = bbApp || {};
             termString += model.attributes.term + ' ';
           }
         }
+
+        weightsArray.push(model.attributes.term);
       }
 
       this.nav = new bbApp.Nav({terms: termString});
       this.navView = new bbApp.NavView({model: this.nav});
+      this.weightsView = new bbApp.WeightsView({collection: bbApp.weights});
+      this.trendsView = new bbApp.TrendsView({
+        collection: bbApp.trends,
+        termCount: weightsLength - 1,
+        terms: weightsArray
+      });
 
       weightsDiv = $('#weights-div');
-      this.weightsView = new bbApp.WeightsView({collection: bbApp.weights});
-
-      this.getTrendsTable();
-
       scrollTarget = weightsDiv.offset();
       $( 'body' ).animate({ scrollTop: scrollTarget.top }, 'slow' );
-    },
-    getTrendsTable: function() {
-
     }
   });
 

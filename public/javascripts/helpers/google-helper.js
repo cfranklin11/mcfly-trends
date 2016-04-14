@@ -109,7 +109,7 @@ var bbApp = bbApp || {};
         trendsArray.push(trend);
       }
 
-      console.log(trendsArray);
+      bbApp.trends.reset(trendsArray);
 
       // Reveal data tables and auto-scroll down
       bbApp.appRouter.getWeightsTable();
