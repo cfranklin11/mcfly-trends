@@ -7,9 +7,13 @@ var bbApp = bbApp || {};
   bbApp.GoogleHelper = {
 
     // Make call to Google Trends
-    getData: function(url) {
-      var query;
-      query = new google.visualization.Query(url);
+    getData: function(params) {
+      var callParams, callUrl, query;
+
+      callParams = '?' + params + '&cid=TIMESERIES_GRAPH_0&export=3';
+      callUrl = 'https://www.google.com/trends/fetchComponent' + callParams;
+
+      query = new google.visualization.Query(callUrl);
       query.send(bbApp.GoogleHelper.processData);
     },
     // Query callback to process the data object

@@ -5,22 +5,13 @@ var bbApp = bbApp || {};
 (function ($) {
   var AppRouter = Backbone.Router.extend({
     routes: {
-      '': 'index',
-      ':query': 'getTrends'
+      '': 'index'
     },
     start: function() {
       Backbone.history.start();
     },
     index: function() {
       this.formView = new bbApp.FormView();
-    },
-    getTrends: function(query) {
-      var callParams, callUrl;
-
-      callParams = '?' + query + '&cid=TIMESERIES_GRAPH_0&export=3';
-      callUrl = 'https://www.google.com/trends/fetchComponent' + callParams;
-      bbApp.GoogleHelper.getData(callUrl);
-
     },
     getWeightsTable: function() {
       var weights, weightsLength, i, model, termString, weightsDiv, scrollTarget;

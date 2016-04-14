@@ -14,10 +14,6 @@ var bbApp = bbApp || {};
     initialize: function() {
       this.render();
     },
-    render: function() {
-      this.$el.html(this.template());
-      return this;
-    },
     toggleSubmitBtn: function() {
       var text, submitBtn, submitDisabled;
 
@@ -103,8 +99,11 @@ var bbApp = bbApp || {};
 
       // Join URL parameter strings, then create the router path
       params = queryUrl + geoUrl + dateUrl;
-      routePath = params;
-      bbApp.appRouter.navigate('#/' + params, {trigger: true});
+      bbApp.GoogleHelper.getData(params);
     },
+    render: function() {
+      this.$el.html(this.template());
+      return this;
+    }
   });
 })(jQuery);
