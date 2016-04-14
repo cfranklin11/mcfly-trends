@@ -19,6 +19,12 @@ var bbApp = bbApp || {};
       colSpan = ( length + 1 ).toString();
       this.$el.find( 'th' ).first().attr( 'colspan', colSpan );
     },
+    addOne: function(trend) {
+      var trendView;
+
+      trendView = new bbApp.TrendView({model: trend});
+      this.$el.find('tbody').append(trendView.render().el);
+    },
     render: function () {
       var length;
 
@@ -26,12 +32,6 @@ var bbApp = bbApp || {};
       this.collection.each(this.addOne, this);
 
       return this;
-    },
-    addOne: function(trend) {
-      var trendView;
-
-      trendView = new bbApp.TrendView({model: trend});
-      this.$el.find('tbody').append(trendView.render().el);
     }
   });
 })(jQuery);

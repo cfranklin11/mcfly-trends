@@ -4,7 +4,7 @@ var bbApp = bbApp || {};
 
 (function(d3, $) {
 
-  bbApp.D3Helper = {
+  bbApp.d3Helper = {
     createTermsArray: function(data, i) {
       return data.Kf[ i ] ? "'" + data.Kf[ i ].label + "'" : 'Monthly Weight';
     },
@@ -118,8 +118,6 @@ var bbApp = bbApp || {};
 
         weightsTable[ weightsTable.length - 1 ].push( monthSum );
       }
-
-      console.log(weightsTable);
 
       // Loop through 'included' cells of weights table and the weights array
       // to change text of table cells to reflect new weights

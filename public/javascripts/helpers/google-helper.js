@@ -18,8 +18,10 @@ var bbApp = bbApp || {};
     },
     // Query callback to process the data object
     processData: function(response) {
-      var d3Helper, data, colsLength, totalWeight, weights, i, termString, weightsArray,
-        termWeight, model, modelAttr, modelWeights, modelPercents, termPercent, j;
+      var d3Helper, data, colsLength, totalWeight, weights, i, termString,
+        weightsArray, termWeight, model, modelAttr, modelWeights,
+        modelPercents, termPercent, j, monthConverter, rows, rowsLength,
+        trendsArray, trend, rowData, date, year, rawMonth, correctMonth;
 
       // Handle errors
       if (response.isError()) {
@@ -28,7 +30,7 @@ var bbApp = bbApp || {};
         return;
       }
 
-      d3Helper = bbApp.D3Helper;
+      d3Helper = bbApp.d3Helper;
       data = response.getDataTable();
       colsLength = data.Kf.length;
       totalWeight = 0;
@@ -37,7 +39,7 @@ var bbApp = bbApp || {};
       weights.reset();
 
       for (i = 1; i < colsLength + 1; i++) {
-        termString = d3Helper.createTermsArray(data, i);
+        // termString = d3Helper.createTermsArray(data, i);
 
         // Process data to get monthly weights table
         weightsArray = d3Helper.calculateWeights(data, colsLength, i);
@@ -65,6 +67,49 @@ var bbApp = bbApp || {};
           termPercent: termPercent
         });
       });
+
+      // Generate trends data table
+      monthConverter = {
+        January: 'February',
+        February: 'March',
+        March: 'April',
+        April: 'May',
+        May: 'June',
+        June: 'July',
+        July: 'August',
+        August: 'September',
+        September: 'October',
+        October: 'November',
+        November: 'December',
+        December: 'January'
+      };
+      rows = data.Lf;
+      rowsLength = rows.length;
+      trendsArray = [];
+
+      for ( i = 0; i < rowsLength; i++ ) {
+        trend = {};
+        rowData = rows[ i ].c;
+        date = new Date( rowData[ 0 ].v );
+        year = date.getFullYear();
+        trend.year = year;
+
+        // Split date string into month & year, then get month only
+        rawMonth = rowData[ 0 ].f.split( ' ' ).shift();
+
+        // Convert month string to correct month
+        correctMonth = monthConverter[ rawMonth ];
+        trend.month = correctMonth;
+
+        // Create a new cell in table per data point in row
+        for ( j = 1; j < colsLength; j++ ) {
+          trend['volume' + j] = rowData[j] ? rowData[ j ].f : 0;
+        }
+
+        trendsArray.push(trend);
+      }
+
+      console.log(trendsArray);
 
       // Reveal data tables and auto-scroll down
       bbApp.appRouter.getWeightsTable();

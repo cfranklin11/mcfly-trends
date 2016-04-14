@@ -39,8 +39,13 @@ var bbApp = bbApp || {};
       weightsDiv = $('#weights-div');
       this.weightsView = new bbApp.WeightsView({collection: bbApp.weights});
 
+      this.getTrendsTable();
+
       scrollTarget = weightsDiv.offset();
       $( 'body' ).animate({ scrollTop: scrollTarget.top }, 'slow' );
+    },
+    getTrendsTable: function() {
+
     }
   });
 
