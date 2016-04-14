@@ -25,7 +25,10 @@ var bbApp = bbApp || {};
       for (i = 0; i < weightsLength - 1; i++) {
         model = weights.models[i];
         if (i === weightsLength - 2) {
-          termString +=  'and ' + model.attributes.term + '.';
+          if (weightsLength > 2) {
+            termString +=  'and ' + model.attributes.term + '.';
+          }
+            termString += model.attributes.term + '.';
         } else {
           if (weightsLength > 3) {
             termString += model.attributes.term + ', ';
