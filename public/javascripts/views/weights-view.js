@@ -17,16 +17,6 @@ var bbApp = bbApp || {};
     initialize: function() {
       this.render();
     },
-    render: function() {
-      var i, messages, messageCount, message, weights, term, termsArray,
-        termsString, weightsLength;
-
-      this.$el.html(this.template());
-
-      this.collection.each(this.addOne, this);
-
-      return this;
-    },
     addOne: function(weight) {
       var weightView;
 
@@ -186,6 +176,16 @@ var bbApp = bbApp || {};
         span.removeClass( 'glyphicon-ok-sign' );
         span.addClass( 'glyphicon-remove-sign' );
       }
+    },
+    render: function() {
+      var i, messages, messageCount, message, weights, term, termsArray,
+        termsString, weightsLength;
+
+      this.$el.html(this.template());
+
+      this.collection.each(this.addOne, this);
+
+      return this;
     }
   });
 })(jQuery);

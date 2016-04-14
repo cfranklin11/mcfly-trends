@@ -8,7 +8,7 @@ var bbApp = bbApp || {};
     el: $('#trends-div'),
     tagName: 'div',
     className: 'col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2',
-    template: _.template($('#trends-view')),
+    template: _.template($('#trends-view').html()),
     initialize: function () {
       var colSpan, length;
 
@@ -34,4 +34,4 @@ var bbApp = bbApp || {};
       this.$el.find('tbody').append(trendView.render().el);
     }
   });
-})( jQuery );
+})(jQuery);

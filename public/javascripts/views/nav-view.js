@@ -15,13 +15,6 @@ var bbApp = bbApp || {};
     initialize: function() {
       this.render();
     },
-    render: function() {
-      var attributes;
-
-      attributes = this.model.toJSON();
-      this.$el.html(this.template(attributes));
-      return this;
-    },
     createCsv: function() {
       var tables, tableCount, csvContent, table, thead, titles, titleCount,
         tbody, tableRows, rowCount, colCount, title, tableRow, tableCells,
@@ -105,6 +98,13 @@ var bbApp = bbApp || {};
       if ( browserPos < navDivPos ) {
         nav.removeClass( 'navbar-fixed-top' );
       }
+    },
+    render: function() {
+      var attributes;
+
+      attributes = this.model.toJSON();
+      this.$el.html(this.template(attributes));
+      return this;
     }
   });
 })(jQuery);

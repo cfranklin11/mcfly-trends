@@ -17,27 +17,30 @@ var bbApp = bbApp || {};
     getTrends: function(query) {
       var callParams, callUrl;
 
-      console.log(query);
-
       callParams = '?' + query + '&cid=TIMESERIES_GRAPH_0&export=3';
       callUrl = 'https://www.google.com/trends/fetchComponent' + callParams;
       bbApp.GoogleHelper.getData(callUrl);
 
     },
     getWeightsTable: function() {
-      var weights, weightsLength, termString, weightsDiv, scrollTarget;
+      var weights, weightsLength, i, model, termString, weightsDiv, scrollTarget;
 
       termString = '';
       weights = bbApp.weights;
       weightsLength = weights.length;
 
-      weights.each(function(model, index) {
-        if (index === weightsLength) {
+      for (i = 0; i < weightsLength - 1; i++) {
+        model = weights.models[i];
+        if (i === weightsLength - 2) {
           termString +=  'and ' + model.attributes.term + '.';
         } else {
-          termString += model.attributes.term + ', ';
+          if (weightsLength > 3) {
+            termString += model.attributes.term + ', ';
+          } else {
+            termString += model.attributes.term;
+          }
         }
-      });
+      }
 
       this.nav = new bbApp.Nav({terms: termString});
       this.navView = new bbApp.NavView({model: this.nav});
@@ -46,9 +49,7 @@ var bbApp = bbApp || {};
       this.weightsView = new bbApp.WeightsView({collection: bbApp.weights});
 
       scrollTarget = weightsDiv.offset();
-
-      console.log(scrollTarget)
-      $( 'body' ).animate({ scrollTop: scrollTarget }, 'slow' );
+      $( 'body' ).animate({ scrollTop: scrollTarget.top }, 'slow' );
     }
   });
 
