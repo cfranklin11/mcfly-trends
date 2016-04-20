@@ -3,7 +3,7 @@
 var bbApp = bbApp || {};
 
 // Create an individual account row for the accounts table
-( function ( $ ) {
+(function ($) {
   bbApp.TrendsView = Backbone.View.extend({
     el: $('#trends-div'),
     tagName: 'div',
@@ -19,8 +19,8 @@ var bbApp = bbApp || {};
       this.render();
 
       // Adjust table title row according to # of terms
-      colSpan = ( this.termCount + 2 ).toString();
-      this.$el.find( 'th' ).first().attr( 'colspan', colSpan );
+      colSpan = (this.termCount + 2).toString();
+      this.$el.find('th').first().attr('colspan', colSpan);
 
       for (i = 0; i < this.termCount; i++) {
         this.$el.find('thead').find('tr:nth-child(2)').append('<th>' + this.terms[i] + '</th>');

@@ -50,7 +50,7 @@ var bbApp = bbApp || {};
         terms: weightsArray
       });
 
-      weightsDiv = $('#weights-div');
+      weightsDiv = $('#nav-div');
       scrollTarget = weightsDiv.offset();
       $( 'body' ).animate({ scrollTop: scrollTarget.top }, 'slow' );
     }

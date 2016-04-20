@@ -3,7 +3,7 @@
 var bbApp = bbApp || {};
 
 // Create an individual account row for the accounts table
-( function ( $ ) {
+(function ($) {
   bbApp.TrendView = Backbone.View.extend({
     tagName: 'tr',
     initialize: function (options) {
@@ -14,9 +14,9 @@ var bbApp = bbApp || {};
     },
     render: function () {
       var attributes = this.model.toJSON();
-      this.$el.html( this.template( attributes ));
+      this.$el.html(this.template(attributes));
 
       return this;
     }
   });
-})( jQuery );
+})(jQuery);
