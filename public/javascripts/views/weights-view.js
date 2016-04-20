@@ -10,7 +10,8 @@ var bbApp = bbApp || {};
       'mousedown th[data-col]': 'selectMonths',
       'mouseover th[data-col]': 'highlightMonths',
       'mouseenter th.included, th.excluded': 'highlightColumns',
-      'mouseleave th.included, th.excluded': 'unhighlightColumns'
+      'mouseleave th.included, th.excluded': 'unhighlightColumns',
+      'click #reset': 'resetMonths',
     },
     mousedown: false,
     included: false,
@@ -169,6 +170,19 @@ var bbApp = bbApp || {};
         span.removeClass('glyphicon-ok-sign');
         span.addClass('glyphicon-remove-sign');
       }
+    },
+    resetMonths: function() {
+      var excludedCells, excludedHeaders, spans;
+
+      excludedCells = $('#table1').find('.excluded');
+      excludedCells.removeClass('excluded');
+      excludedCells.addClass('included');
+
+      spans = $('#table1').find('th.included').find('span');
+      spans.removeClass('glyphicon-remove-sign');
+      spans.addClass('glyphicon-ok-sign');
+
+      bbApp.d3Helper.recalculatePercents();
     },
     render: function() {
       this.$el.html(this.template());

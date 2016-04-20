@@ -8,7 +8,6 @@ var bbApp = bbApp || {};
     template: _.template($('#nav-view').html()),
     events: {
       'click #csv': 'createCsv',
-      'click #reset': 'resetMonths',
       'click #top': 'goToTop'
     },
     initialize: function() {
@@ -71,14 +70,6 @@ var bbApp = bbApp || {};
       link.setAttribute('download', 'monthly-data.csv');
 
       link.click();
-    },
-    resetMonths: function() {
-      var excludedCells;
-
-      excludedCells = $('#table1').find('.excluded');
-      excludedCells.removeClass('excluded');
-      excludedCells.addClass('included');
-      calculateWeights();
     },
     goToTop: function() {
       $('body').animate({scrollTop: 0}, 'slow');

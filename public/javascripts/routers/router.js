@@ -65,8 +65,6 @@ var bbApp = bbApp || {};
         mousedown = self.weightsView.mousedown;
         included = self.weightsView.included;
 
-        console.log(included);
-
         if (mousedown) {
           toggleCells = $('.table-hover');
           spans = $('th.table-hover').find('span');
