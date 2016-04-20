@@ -27,7 +27,7 @@ var bbApp = bbApp || {};
       // Iterate through each table
       for (i = 0; i < tableCount; i++) {
 
-        table = tables[ i ];
+        table = tables[i];
         thead = $(table).children('thead');
         titles = thead.find('h4');
         titleCount = titles.length;
@@ -38,21 +38,21 @@ var bbApp = bbApp || {};
 
         // Add table titles separately with an extra space below
         for(j = 0; j < titleCount; j++) {
-          title = $(titles[ j ]).text();
+          title = $(titles[j]).text();
           csvContent += title + '\n';
         }
         csvContent += '\n';
 
         // Iterate through each row
         for (j = 0; j < rowCount; j++) {
-          tableRow = tableRows[ j ];
+          tableRow = tableRows[j];
           tableCells = $(tableRow).children('th,td');
 
 
           // Iterate through each cell in the row, adding the text
           // to the row string
           for (k = 0; k < colCount; k++) {
-            cell = tableCells[ k ];
+            cell = tableCells[k];
             csvContent += $(cell).text();
 
             // Commas to separate columns, finishing with a line break
@@ -69,6 +69,8 @@ var bbApp = bbApp || {};
       link.setAttribute('href', encodedUri);
       link.setAttribute('download', 'monthly-data.csv');
 
+      console.log('click');
+
       link.click();
     },
     goToTop: function() {
@@ -79,7 +81,7 @@ var bbApp = bbApp || {};
 
       navDiv = $('#nav-bar');
       nav = $('nav');
-      navDivPos = navDiv[ 0 ].offsetTop;
+      navDivPos = navDiv[0].offsetTop;
       browserPos = window.pageYOffset;
 
       if (browserPos > navDivPos) {
