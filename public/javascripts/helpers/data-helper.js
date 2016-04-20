@@ -91,21 +91,21 @@ var bbApp = bbApp || {};
 
       for (i = 0; i < rowsLength; i++) {
         trend = {};
-        rowData = rowsi].c;
-        date = new Date(rowData0].v);
+        rowData = rows[i].c;
+        date = new Date(rowData[0].v);
         year = date.getFullYear();
         trend.year = year;
 
         // Split date string into month & year, then get month only
-        rawMonth = rowData0].f.split(' ').shift();
+        rawMonth = rowData[0].f.split(' ').shift();
 
         // Convert month string to correct month
-        correctMonth = monthConverterrawMonth];
+        correctMonth = monthConverter[rawMonth];
         trend.month = correctMonth;
 
         // Create a new cell in table per data point in row
         for (j = 1; j < colsLength; j++) {
-          trend['volume' + j] = rowData[j] ? rowDataj].f : 0;
+          trend['volume' + j] = rowData[j] ? rowData[j].f : 0;
         }
 
         trendsArray.push(trend);
@@ -117,7 +117,7 @@ var bbApp = bbApp || {};
       bbApp.appRouter.createTables();
 
       function createTermsArray (data, i) {
-        return data.Kfi] ? "'" + data.Kfi].label + "'" : 'Monthly Weight';
+        return data.Kf[i] ? "'" + data.Kf[i].label + "'" : 'Monthly Weight';
       }
 
       function calculatePercent (value) {
