@@ -19,7 +19,7 @@ var bbApp = bbApp || {};
     // Query callback to process the data object
     processData: function(response) {
       var d3Helper, data, colsLength, totalWeight, weights, i, termString,
-        weightsArray, termWeight, model, modelAttr, modelWeights,
+        weightsArray, termWeight, modelAttr, modelWeights,
         modelPercents, termPercent, j, monthConverter, rows, rowsLength,
         trendsArray, trend, rowData, date, year, rawMonth, correctMonth;
 
@@ -39,7 +39,7 @@ var bbApp = bbApp || {};
       weights.reset();
 
       for (i = 1; i < colsLength + 1; i++) {
-        termString = d3Helper.createTermsArray(data, i);
+        termString = createTermsArray(data, i);
 
         // Process data to get monthly weights table
         weightsArray = d3Helper.calculateWeights(data, colsLength, i);
@@ -60,7 +60,7 @@ var bbApp = bbApp || {};
         modelAttr = model.attributes;
         modelWeights = modelAttr.monthWeights;
         modelPercents = modelWeights.map(calculatePercent);
-        termPercent = calculatePercent(modelAttr.termWeight, modelWeights);
+        termPercent = calculatePercent(modelAttr.termWeight);
 
         model.set({
           monthPercents: modelPercents,
@@ -114,7 +114,11 @@ var bbApp = bbApp || {};
       // Reveal data tables and auto-scroll down
       bbApp.appRouter.getWeightsTable();
 
-      function calculatePercent (value, array) {
+      function createTermsArray (data, i) {
+        return data.Kf[ i ] ? "'" + data.Kf[ i ].label + "'" : 'Monthly Weight';
+      }
+
+      function calculatePercent (value) {
         var total, percent;
 
         total = totalWeight;

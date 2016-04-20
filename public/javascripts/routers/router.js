@@ -27,8 +27,9 @@ var bbApp = bbApp || {};
         if (i === weightsLength - 2) {
           if (weightsLength > 2) {
             termString +=  'and ' + model.attributes.term + '.';
-          }
+          } else {
             termString += model.attributes.term + '.';
+          }
         } else {
           if (weightsLength > 3) {
             termString += model.attributes.term + ', ';
