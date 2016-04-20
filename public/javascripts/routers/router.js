@@ -14,9 +14,10 @@ var bbApp = bbApp || {};
       this.formView = new bbApp.FormView();
     },
     getWeightsTable: function() {
-      var weights, weightsLength, weightsArray, i, model, termString,
+      var self, termString, weights, weightsLength, weightsArray, i, model,
         weightsDiv, scrollTarget;
 
+      self = this;
       termString = '';
       weights = bbApp.weights;
       weightsLength = weights.length;
@@ -50,9 +51,44 @@ var bbApp = bbApp || {};
         terms: weightsArray
       });
 
+      // Create event listener to toggle active/inactive columns
+      // in weights view
+      $(document).mouseup(toggleMonths);
+
       weightsDiv = $('#nav-div');
       scrollTarget = weightsDiv.offset();
       $( 'body' ).animate({ scrollTop: scrollTarget.top }, 'slow' );
+
+      function toggleMonths() {
+        var mousedown, included, toggleCells, spans;
+
+        mousedown = self.weightsView.mousedown;
+        included = self.weightsView.included;
+
+        toggleCells = $('.table-hover');
+        spans = $('th.table-hover').find('span');
+
+        if (mousedown) {
+          toggleCells.removeClass('table-hover');
+
+          if (included) {
+            toggleCells.removeClass('included');
+            toggleCells.addClass('excluded');
+
+            spans.removeClass('glyphicon-ok-sign');
+            spans.addClass('glyphicon-remove-sign');
+
+          } else {
+            toggleCells.removeClass('excluded');
+            toggleCells.addClass('included');
+
+            spans.removeClass('glyphicon-remove-sign');
+            spans.addClass('glyphicon-ok-sign');
+          }
+
+          bbApp.d3Helper.recalculatePercents();
+        }
+      }
     }
   });
 

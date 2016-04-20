@@ -16,7 +16,6 @@ var bbApp = bbApp || {};
     included: false,
     initialize: function() {
       this.render();
-      $(document).mouseup(this.toggleMonths);
     },
     addOne: function(weight) {
       var weightView;
@@ -24,23 +23,23 @@ var bbApp = bbApp || {};
       weightView = new bbApp.WeightView({model: weight});
       this.$el.find('tbody').append(weightView.render().el);
     },
-    selectMonths: function() {
+    selectMonths: function(event) {
       var cell, col, firstCol, colCells;
 
       event.preventDefault();
 
-      cell = this.$el.find('th[data-col]');
+      cell = $(event.currentTarget);
       col = +cell.attr('data-col');
       firstCol = col;
       colCells = cell.closest('table').find('[data-col="' + col + '"]');
       this.mousedown = true;
       this.included = cell.hasClass('included');
     },
-    highlightMonths: function() {
+    highlightMonths: function(event) {
       var cell, col, firstCol, prevCol, colCells, prevColCells, thisIncluded,
         minCol, maxCol, i, toggleColCells, spans, thatIncluded;
 
-      cell = this.$el.find('th[data-col]');
+      cell = $(event.currentTarget);
       col = +cell.attr('data-col');
       firstCol = col;
       prevCol = col;
@@ -121,40 +120,10 @@ var bbApp = bbApp || {};
         }
       }
     },
-    toggleMonths: function() {
-      var self, toggleCells, spans;
-
-      self = $(document);
-
-      if (this.mousedown) {
-        toggleCells = $('.table-hover');
-        spans = $('th.table-hover').find('span');
-
-        this.mousedown = false;
-        toggleCells.removeClass('table-hover');
-
-        if (this.included) {
-          toggleCells.removeClass('included');
-          toggleCells.addClass('excluded');
-
-          spans.removeClass('glyphicon-ok-sign');
-          spans.addClass('glyphicon-remove-sign');
-
-        } else {
-          toggleCells.removeClass('excluded');
-          toggleCells.addClass('included');
-
-          spans.removeClass('glyphicon-remove-sign');
-          spans.addClass('glyphicon-ok-sign');
-        }
-
-        bbApp.d3Helper.recalculateWeights();
-      }
-    },
-    highlightColumns: function () {
+    highlightColumns: function (event) {
       var self, column, columnCells, span;
 
-      self = this.$el.find('th.included');
+      self = $(event.currentTarget);
 
       column = self.attr('data-col');
       columnCells = $('#table1').find('[data-col="' + column + '"]');
@@ -173,10 +142,10 @@ var bbApp = bbApp || {};
         }
       }
     },
-    unhighlightColumns: function() {
+    unhighlightColumns: function(event) {
       var self, column, columnCells, span;
 
-      self = this.$el.find('th.included');
+      self = $(event.currentTarget);
 
       column = self.attr('data-col');
       columnCells = $('#table1').find('[data-col="' + column + '"]');
