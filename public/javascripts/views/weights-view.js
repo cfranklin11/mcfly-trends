@@ -13,6 +13,8 @@ var bbApp = bbApp || {};
       'mouseleave th.included, th.excluded': 'unhighlightColumns',
       'click #reset': 'resetMonths',
     },
+
+    // Save event data in object for column toggle event in router
     mousedown: false,
     included: false,
     cells: {
@@ -29,6 +31,8 @@ var bbApp = bbApp || {};
       weightView = new bbApp.WeightView({model: weight});
       this.$el.find('tbody').append(weightView.render().el);
     },
+
+    // Handle click on weights column
     selectMonths: function(event) {
       var cell;
 
@@ -40,10 +44,15 @@ var bbApp = bbApp || {};
       this.cells.firstCell = cell;
       this.cells.newCell = cell;
     },
+
+    // Handle column highlight during mousedown to highlight columns between
+    // column clicked and current column with cursor
     highlightMonths: function(event) {
       var firstCol, prevCell, prevCol, prevColCells, cell, col, colCells,
         thisIncluded, minCol, maxCol, i, toggleColCells, spans, thatIncluded;
 
+      // Only active if mouse is down, keep track of first column clicked and
+      // previous column hovered with object properties
       if (this.mousedown) {
         firstCol = +this.cells.firstCell.attr('data-col');
         prevCell = this.cells.newCell;
@@ -60,6 +69,8 @@ var bbApp = bbApp || {};
         maxCol = 0;
 
         if (col !== prevCol && col !== firstCol) {
+
+          // Handle highlight if cursor is to the left of first column clicked
           if (col < firstCol) {
 
             for (i = 0; i < 12; i++) {
@@ -93,6 +104,7 @@ var bbApp = bbApp || {};
 
             minCol = col;
 
+          // Handle highlight if cursor is to the right of first column clicked
           } else {
 
             for (i = 0; i < 12; i++) {
@@ -129,6 +141,8 @@ var bbApp = bbApp || {};
         }
       }
     },
+
+    // Handle column highlighting with mouseenter (only if mouse is not down)
     highlightColumns: function (event) {
       var self, column, columnCells, span, included;
 
@@ -151,6 +165,9 @@ var bbApp = bbApp || {};
         }
       }
     },
+
+    // Handle removal of column highlighting with mouseleave
+    // (only if mouse is not down)
     unhighlightColumns: function(event) {
       var self, column, columnCells, span, included;
 
@@ -171,6 +188,8 @@ var bbApp = bbApp || {};
         span.addClass('glyphicon-remove-sign');
       }
     },
+
+    // Activate (make included) all months
     resetMonths: function() {
       var excludedCells, excludedHeaders, spans;
 

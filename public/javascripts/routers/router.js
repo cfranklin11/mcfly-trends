@@ -13,7 +13,7 @@ var bbApp = bbApp || {};
     index: function() {
       this.formView = new bbApp.FormView();
     },
-    getWeightsTable: function() {
+    createTables: function() {
       var self, termString, weights, weightsLength, weightsArray, i, model,
         weightsDiv, scrollTarget;
 

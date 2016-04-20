@@ -69,8 +69,6 @@ var bbApp = bbApp || {};
       link.setAttribute('href', encodedUri);
       link.setAttribute('download', 'monthly-data.csv');
 
-      console.log('click');
-
       link.click();
     },
     goToTop: function() {

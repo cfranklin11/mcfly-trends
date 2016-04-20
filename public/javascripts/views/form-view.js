@@ -29,12 +29,13 @@ var bbApp = bbApp || {};
       }
     },
     queryGoogleTrends: function(event) {
-      event.preventDefault();
       var form, action, searchTerms, country, startDate, endDate, termString,
         startYM, startYear, startMonth, endYM, endYear, endMonth, today,
         thisYear, thisMonth, queryUrl, geoUrl, startUrl, monthUrl, dateUrl,
         monthDiff, callParams, callUrl, yearString, monthString, routePath,
         params;
+
+      event.preventDefault();
 
       form = $('form');
       action = form.attr('action');
@@ -99,6 +100,8 @@ var bbApp = bbApp || {};
 
       // Join URL parameter strings, then create the router path
       params = queryUrl + geoUrl + dateUrl;
+
+      // Finish data processing in data-helper
       bbApp.dataHelper.getData(params);
     },
     render: function() {

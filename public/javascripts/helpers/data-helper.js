@@ -16,6 +16,7 @@ var bbApp = bbApp || {};
       query = new google.visualization.Query(callUrl);
       query.send(bbApp.dataHelper.processData);
     },
+
     // Query callback to process the data object
     processData: function(response) {
       var d3Helper, data, colsLength, totalWeight, weights, i, termString,
@@ -41,7 +42,7 @@ var bbApp = bbApp || {};
       for (i = 1; i < colsLength + 1; i++) {
         termString = createTermsArray(data, i);
 
-        // Process data to get monthly weights table
+        // Process data to calculate weights figures
         weightsArray = d3Helper.calculateWeights(data, colsLength, i);
         termWeight = weightsArray.pop();
 
@@ -49,6 +50,7 @@ var bbApp = bbApp || {};
           totalWeight += termWeight;
         }
 
+        // Create weights collection, and populate it with weight models
         weights.add({
           term: termString,
           monthWeights: weightsArray,
@@ -68,7 +70,7 @@ var bbApp = bbApp || {};
         });
       });
 
-      // Generate trends data table
+      // Generate trends collection and populate it with trend models
       monthConverter = {
         January: 'February',
         February: 'March',
@@ -87,23 +89,23 @@ var bbApp = bbApp || {};
       rowsLength = rows.length;
       trendsArray = [];
 
-      for ( i = 0; i < rowsLength; i++ ) {
+      for (i = 0; i < rowsLength; i++) {
         trend = {};
-        rowData = rows[ i ].c;
-        date = new Date( rowData[ 0 ].v );
+        rowData = rowsi].c;
+        date = new Date(rowData0].v);
         year = date.getFullYear();
         trend.year = year;
 
         // Split date string into month & year, then get month only
-        rawMonth = rowData[ 0 ].f.split( ' ' ).shift();
+        rawMonth = rowData0].f.split(' ').shift();
 
         // Convert month string to correct month
-        correctMonth = monthConverter[ rawMonth ];
+        correctMonth = monthConverterrawMonth];
         trend.month = correctMonth;
 
         // Create a new cell in table per data point in row
-        for ( j = 1; j < colsLength; j++ ) {
-          trend['volume' + j] = rowData[j] ? rowData[ j ].f : 0;
+        for (j = 1; j < colsLength; j++) {
+          trend['volume' + j] = rowData[j] ? rowDataj].f : 0;
         }
 
         trendsArray.push(trend);
@@ -112,10 +114,10 @@ var bbApp = bbApp || {};
       bbApp.trends.reset(trendsArray);
 
       // Reveal data tables and auto-scroll down
-      bbApp.appRouter.getWeightsTable();
+      bbApp.appRouter.createTables();
 
       function createTermsArray (data, i) {
-        return data.Kf[ i ] ? "'" + data.Kf[ i ].label + "'" : 'Monthly Weight';
+        return data.Kfi] ? "'" + data.Kfi].label + "'" : 'Monthly Weight';
       }
 
       function calculatePercent (value) {
