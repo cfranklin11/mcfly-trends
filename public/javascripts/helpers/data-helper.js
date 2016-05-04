@@ -122,7 +122,7 @@ var bbApp = bbApp || {};
         var total, percent;
 
         total = totalWeight;
-        percent = ((value / total) * 100).toFixed(2);
+        percent = ((value / total) * 100).toFixed(2).concat('%');
 
         return percent;
       }
