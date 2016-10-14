@@ -15,7 +15,7 @@ var bbApp = bbApp || {};
       for (j = 0; j < 12; j++) {
 
         // Calculate total mean per month across all years
-        monthAvg = d3.mean(data.Lf, monthAvgFunc);
+        monthAvg = d3.mean(data.Tf, monthAvgFunc);
 
         avgs.push(monthAvg);
       }
