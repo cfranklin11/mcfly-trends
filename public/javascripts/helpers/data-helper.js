@@ -39,8 +39,6 @@ var bbApp = bbApp || {};
 
       weights.reset();
 
-      console.log(data);
-
       for (i = 1; i < colsLength + 1; i++) {
         termString = createTermsArray(data, i);
 
