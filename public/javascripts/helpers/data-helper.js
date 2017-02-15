@@ -33,7 +33,7 @@ var bbApp = bbApp || {};
 
       d3Helper = bbApp.d3Helper;
       data = response.getDataTable();
-      colsLength = data.Sf.length;
+      colsLength = data.pg.length;
       totalWeight = 0;
       weights = bbApp.weights;
 
@@ -85,7 +85,7 @@ var bbApp = bbApp || {};
         November: 'December',
         December: 'January'
       };
-      rows = data.Tf;
+      rows = data.qg;
       rowsLength = rows.length;
       trendsArray = [];
 
@@ -117,7 +117,7 @@ var bbApp = bbApp || {};
       bbApp.appRouter.createTables();
 
       function createTermsArray (data, i) {
-        return data.Sf[i] ? "'" + data.Sf[i].label + "'" : 'Monthly Weight';
+        return data.pg[i] ? "'" + data.pg[i].label + "'" : 'Monthly Weight';
       }
 
       function calculatePercent (value) {
