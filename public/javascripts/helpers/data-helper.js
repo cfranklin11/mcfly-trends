@@ -19,7 +19,7 @@ var bbApp = bbApp || {};
 
     // Query callback to process the data object
     processData: function(response) {
-      var d3Helper, data, colsLength, totalWeight, weights, i, termString,
+      var d3Helper, responseData, dataArrays, data, colsLength, totalWeight, weights, i, termString,
         weightsArray, termWeight, modelAttr, modelWeights,
         modelPercents, termPercent, j, monthConverter, rows, rowsLength,
         trendsArray, trend, rowData, date, year, rawMonth, correctMonth;
@@ -32,8 +32,17 @@ var bbApp = bbApp || {};
       }
 
       d3Helper = bbApp.d3Helper;
-      data = response.getDataTable();
-      colsLength = data.pg.length;
+      responseData = response.getDataTable();
+      dataArrays = Object.values(responseData)
+        .filter(function(value) {
+          return Array.isArray(value) && value.length > 0
+        });
+      data = {
+        headers: dataArrays[0].length < dataArrays[1].length ? dataArrays[0] : dataArrays[1],
+        rows: dataArrays[0].length < dataArrays[1].length ? dataArrays[1] : dataArrays[0]
+      }
+
+      colsLength = data.headers.length;
       totalWeight = 0;
       weights = bbApp.weights;
 
@@ -85,7 +94,7 @@ var bbApp = bbApp || {};
         November: 'December',
         December: 'January'
       };
-      rows = data.qg;
+      rows = data.rows;
       rowsLength = rows.length;
       trendsArray = [];
 
@@ -117,7 +126,7 @@ var bbApp = bbApp || {};
       bbApp.appRouter.createTables();
 
       function createTermsArray (data, i) {
-        return data.pg[i] ? "'" + data.pg[i].label + "'" : 'Monthly Weight';
+        return data.headers[i] ? "'" + data.headers[i].label + "'" : 'Monthly Weight';
       }
 
       function calculatePercent (value) {
