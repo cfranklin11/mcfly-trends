@@ -1,32 +1,39 @@
-'use strict';
+/* eslint-disable no-console */
 
 // Module dependencies.
-var port = process.env.PORT || 8080,
-  express = require( 'express' ), //Web framework
-  bodyParser = require( 'body-parser' ), //Parser for reading request body
-  path = require( 'path' ), //Utilities for dealing with file paths
-  morgan = require( 'morgan' ),
-  methodOverride = require( 'method-override' ),
+const port = process.env.PORT || 8080
+const express = require('express')
+const bodyParser = require('body-parser')
+const path = require('path')
+const morgan = require('morgan')
+const methodOverride = require('method-override')
+const getData = require('./middleware/google-trends-data')
 
-//Create server
-app = express();
+// Create server
+const app = express()
 
 // set up our express application
-app.use( morgan( 'dev' )); // log every request to the console
-app.use( bodyParser.json() );
-app.use( bodyParser.urlencoded({
-  extended: false
-}));
-app.use( methodOverride() ); //checks request.body for HTTP method overrides
+app.use(morgan('dev')) // log every request to the console
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(methodOverride())
 
-//Set client-side directory
-app.use( express.static( __dirname + '/public' ));
+// Set client-side directory
+app.use(express.static(path.join(__dirname, '/public')))
 
-//Routes
-app.get( '/', function ( req, res ) {
-  res.render( 'index' );
-});
+// Routes
+app.get('/', (req, res) => {
+  res.render('index')
+})
+
+app.post(
+  '/data',
+  getData,
+  (req, res) => {
+    res.json(req.trendsResponse)
+  },
+)
 
 // launch ======================================================================
-app.listen( port );
-console.log( 'The magic happens on port ' + port );
+app.listen(port)
+console.log(`The magic happens on port ${port}`)
