@@ -33,7 +33,7 @@ var bbApp = bbApp || {};
       trendTemplate = '<td><%= year %></td><td><%= month %></td>'
 
       for (i = 0; i < this.termCount; i++) {
-        trendTemplate += '<td><%= volume' + (i + 1).toFixed() + '%></td>';
+        trendTemplate += `<td><%= volume${i} %></td>`;
       }
 
       trendView = new bbApp.TrendView({
