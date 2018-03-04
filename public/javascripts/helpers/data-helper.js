@@ -13,7 +13,7 @@ var bbApp = bbApp || {};
         trendsArray, trend, rowData, date, year;
 
       data = {
-        headers: response.keywords,
+        headers: response.keyword,
         rows: response.data.map((monthData) => {
           return { date: monthData.formattedTime, value: monthData.value }
         }),

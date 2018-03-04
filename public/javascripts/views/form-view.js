@@ -57,7 +57,7 @@ var bbApp = bbApp || {};
       $.post(
         '/data',
         params,
-        function (response) {
+        (response) => {
           bbApp.dataHelper.processData(response)
         }
       )
