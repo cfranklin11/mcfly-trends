@@ -58,11 +58,7 @@ var bbApp = bbApp || {};
         '/data',
         params,
         function (response) {
-          console.log(response);
-          // bbApp.trends.reset(response);
-          //
-          // // Reveal data tables and auto-scroll down
-          // bbApp.appRouter.createTables();
+          bbApp.dataHelper.processData(response)
         }
       )
     },
