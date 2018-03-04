@@ -1,11 +1,10 @@
-/* eslint-disable */
+/* eslint-disable strict, prefer-const, no-use-before-define, no-var, one-var, one-var-declaration-per-line */
 
 'use strict';
 
 var bbApp = bbApp || {};
 
-(function(google) {
-
+(function createDataHelper () {
   bbApp.dataHelper = {
     // Query callback to process the data object
     processData (response) {
@@ -13,12 +12,11 @@ var bbApp = bbApp || {};
         monthPercents, termPercent, j, monthConverter, rows, rowsLength,
         trendsArray, trend, rowData, date, year;
 
-      d3Helper = bbApp.d3Helper;
       data = {
         headers: response.keywords,
-        rows: response.data.map(monthData => {
+        rows: response.data.map((monthData) => {
           return { date: monthData.formattedTime, value: monthData.value }
-        })
+        }),
       }
 
       const colsLength = data.headers.length;
@@ -33,22 +31,17 @@ var bbApp = bbApp || {};
 
       // Regexes for filtering data by month
       // (final one is for total weight for the given keyword)
-      monthRegexes = [/Jan/, /Feb/, /Mar/, /Apr/, /May/, /Jun/, /Jul/, /Aug/, /Sep/, /Oct/, /Nov/, /Dec/, /.*/]
+      const monthRegexes = [/Jan/, /Feb/, /Mar/, /Apr/, /May/, /Jun/, /Jul/, /Aug/,
+        /Sep/, /Oct/, /Nov/, /Dec/, /.*/]
 
       // Loop 1 more time than # of keywords to create a totals/overall average
       // row at bottom of table
       for (i = 0; i < colsLength + 1; i += 1) {
         const termString = data.headers[i] || 'Monthly Weight';
-        const termWeights = data.rows.map(row => {
-          return {
-            date: row.date,
-            // If keyword value doesn't exist, sum values for total for the month
-            value: row.value[i] || row.value.reduce((accumulator, current) => { accumulator + current }, 0)
-          }
-        })
+        const termWeights = data.rows.map(keywordRow)
 
         // Map months to array of monthly weights
-        const weightsArray = monthRegexes.map(monthRegex => {
+        const monthWeights = monthRegexes.map((monthRegex) => {
           // Filter by month name
           const monthlyWeights = termWeights.filter((weight) => {
             return monthRegex.test(weight.date)
@@ -61,25 +54,25 @@ var bbApp = bbApp || {};
             }, 0)
         })
 
-        termWeight = weightsArray.pop();
+        termWeight = monthWeights.pop();
 
         // Create weights collection, and populate it with weight models
         weights.add({
           term: termString,
-          monthWeights: weightsArray,
-          termWeight: termWeight
+          monthWeights,
+          termWeight,
         });
       }
 
-      weights.each(function(model) {
+      weights.each((model) => {
         modelAttr = model.attributes;
         modelWeights = modelAttr.monthWeights;
-        modelPercents = modelWeights.map(calculatePercent);
+        monthPercents = modelWeights.map(calculatePercent);
         termPercent = calculatePercent(modelAttr.termWeight);
 
         model.set({
-          monthPercents: modelPercents,
-          termPercent: termPercent
+          monthPercents,
+          termPercent,
         });
       });
 
@@ -90,7 +83,7 @@ var bbApp = bbApp || {};
       rowsLength = rows.length;
       trendsArray = [];
 
-      for (i = 0; i < rowsLength; i++) {
+      for (i = 0; i < rowsLength; i += 1) {
         trend = {};
         rowData = rows[i];
         date = new Date(rowData.date);
@@ -114,13 +107,20 @@ var bbApp = bbApp || {};
       // Reveal data tables and auto-scroll down
       bbApp.appRouter.createTables();
 
-      function createTermsArray (data, i) {
-        return data.headers[i] ? "'" + data.headers[i].label + "'" : 'Monthly Weight';
+      function keywordRow (row) {
+        return {
+          date: row.date,
+          // If keyword value doesn't exist, sum values for total for the month
+          value: row.value[i] ||
+            row.value.reduce((accumulator, current) => {
+              return accumulator + current
+            }, 0),
+        }
       }
 
       function calculatePercent (value) {
         return ((value / totalWeight) * 100).toFixed(2).concat('%');
       }
-    }
+    },
   };
-})(google);
+}());
