@@ -1,0 +1,22 @@
+{
+  "presets": [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "node": "current"
+      },
+      "useBuiltIns": true
+    }],
+    "es2015",
+  ],
+  "env": {
+    "test": {
+      "plugins": ["transform-es2015-modules-commonjs"]
+    }
+  },
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-react-display-name",
+    "transform-class-properties"
+  ]
+}

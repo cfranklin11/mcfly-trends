@@ -20,7 +20,9 @@ function getData (req, res, next) {
         const formattedTime = new Date(data.formattedTime)
         return formattedTime >= startTime && formattedTime <= endTime
       })
-      req.trendsResponse = { data: timeFilteredData, keyword }
+      const keywordData = typeof keyword === 'string' ? [keyword] : keyword
+
+      req.trendsResponse = { data: timeFilteredData, keyword: keywordData }
       return next()
     })
     .catch((err) => {

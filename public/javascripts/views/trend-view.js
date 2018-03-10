@@ -1,22 +1,19 @@
-'use strict';
+import Backbone from 'backbone'
+import _ from 'underscore'
 
-var bbApp = bbApp || {};
+const TrendView = Backbone.View.extend({
+  tagName: 'tr',
+  initialize (options) {
+    // Create template based on html string passed at instantiation
+    this.template = _.template(options.templateString)
+    this.render()
+  },
+  render () {
+    const attributes = this.model.toJSON()
+    this.$el.html(this.template(attributes))
 
-// Create an individual account row for the accounts table
-(function ($) {
-  bbApp.TrendView = Backbone.View.extend({
-    tagName: 'tr',
-    initialize: function (options) {
+    return this
+  },
+})
 
-      // Create template based on html string passed at instantiation
-      this.template = _.template(options.templateString);
-      this.render();
-    },
-    render: function () {
-      var attributes = this.model.toJSON();
-      this.$el.html(this.template(attributes));
-
-      return this;
-    }
-  });
-})(jQuery);
+export default TrendView

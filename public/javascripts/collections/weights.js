@@ -1,11 +1,6 @@
-'use strict';
+import Backbone from 'backbone'
+import Weight from '../models/weight'
 
-var bbApp = bbApp || {};
+const Weights = Backbone.Collection.extend({ model: Weight })
 
-(function() {
-  var Weights = Backbone.Collection.extend({
-    model: bbApp.Weight
-  });
-
-  bbApp.weights = new Weights();
-})();
+export default Weights
