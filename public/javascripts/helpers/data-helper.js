@@ -18,8 +18,10 @@ const dataHelper = {
       }
     }
 
-    function calculatePercent (value, total) {
-      return ((value / total) * 100).toFixed(2).concat('%')
+    function calculatePercent (total) {
+      return (value) => {
+        return ((value / total) * 100).toFixed(2).concat('%')
+      }
     }
 
     const data = {
@@ -36,8 +38,6 @@ const dataHelper = {
       }, 0)
     }, 0)
     const weights = new Weights()
-
-    weights.reset()
 
     // Regexes for filtering data by month
     // (final one is for total weight for the given keyword)
@@ -77,8 +77,8 @@ const dataHelper = {
     weights.each((model) => {
       const modelAttr = model.attributes
       const modelWeights = modelAttr.monthWeights
-      const monthPercents = modelWeights.map(calculatePercent)
-      const termPercent = calculatePercent(modelAttr.termWeight, totalWeight)
+      const monthPercents = modelWeights.map(calculatePercent(totalWeight))
+      const termPercent = calculatePercent(totalWeight)(modelAttr.termWeight)
 
       model.set({
         monthPercents,
@@ -115,7 +115,7 @@ const dataHelper = {
     trends.reset(trendsArray)
 
     // Reveal data tables and auto-scroll down
-    appRouter.createTables()
+    appRouter.createTables(weights, trends)
   },
 }
 

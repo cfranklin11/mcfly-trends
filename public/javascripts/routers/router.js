@@ -2,10 +2,6 @@ import Backbone from 'backbone'
 import $ from 'jquery'
 
 import d3Helper from '../helpers/d3-helper'
-
-import Trends from '../collections/trends'
-import Weights from '../collections/weights'
-
 import Nav from '../models/nav'
 
 import FormView from '../views/form-view'
@@ -23,10 +19,9 @@ const AppRouter = Backbone.Router.extend({
   index () {
     this.formView = new FormView()
   },
-  createTables () {
+  createTables (weights, trends) {
     const self = this
     let termString = ''
-    const weights = new Weights()
     const weightsLength = weights.length
     const weightsArray = []
 
@@ -80,7 +75,7 @@ const AppRouter = Backbone.Router.extend({
     this.navView = new NavView({ model: this.nav })
     this.weightsView = new WeightsView({ collection: weights })
     this.trendsView = new TrendsView({
-      collection: new Trends(),
+      collection: trends,
       termCount: weightsLength - 1,
       terms: weightsArray,
     })
