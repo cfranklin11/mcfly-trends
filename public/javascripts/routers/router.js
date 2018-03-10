@@ -1,7 +1,7 @@
 import Backbone from 'backbone'
 import $ from 'jquery'
 
-import d3Helper from '../helpers/d3-helper'
+import dataHelper from '../helpers/data-helper'
 import Nav from '../models/nav'
 
 import FormView from '../views/form-view'
@@ -50,7 +50,7 @@ const AppRouter = Backbone.Router.extend({
           spans.addClass('glyphicon-ok-sign')
         }
 
-        d3Helper.recalculatePercents()
+        dataHelper.recalculatePercents()
       }
     }
 

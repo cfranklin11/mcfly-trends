@@ -1,3 +1,5 @@
+import $ from 'jquery'
+
 import Weights from '../collections/weights'
 import Trends from '../collections/trends'
 import appRouter from '../routers/router'
@@ -116,6 +118,71 @@ const dataHelper = {
 
     // Reveal data tables and auto-scroll down
     appRouter.createTables(weights, trends)
+  },
+  recalculatePercents () {
+    const table = $('#table1')
+    const tbody = table.children('tbody')
+    const rows = tbody.children('tr:not(:first)')
+    const rowCount = rows.length
+    const weightsTable = []
+
+    // Loop through each row
+    for (let i = 0; i < rowCount - 1; i += 1) {
+      weightsTable.push([])
+      const row = $(rows[i])
+
+      // Loop through each cell in the row, pushing 'included' months into
+      // the data array
+      for (let j = 0; j < 12; j += 1) {
+        const cell = row.children(`[data-col="${j}"]`)
+
+        if (cell.hasClass('included')) {
+          weightsTable[i].push(Number(cell.attr('data-weight')))
+        } else {
+          weightsTable[i].push(0)
+        }
+      }
+    }
+
+    // Calculate the sum search volume of each row's sum
+    // to get the overall sum
+    const termSumTotals = weightsTable.map((currentRow) => {
+      return currentRow.reduce((rowTotalSum, currentCell) => {
+        return rowTotalSum + currentCell
+      }, 0)
+    }, 0)
+    const sumTotal = termSumTotals.reduce((accumulatedSum, currentSum) => {
+      return accumulatedSum + currentSum
+    }, 0)
+
+    for (let i = 0; i < termSumTotals.length; i += 1) {
+      // Add the row's sum to the end of the data array
+      // (i.e. the last column of the table)
+      weightsTable[i].push(termSumTotals[i])
+    }
+
+    // Calculate sum of each month's search volume, then % difference
+    // from overall sum
+    const monthSums = weightsTable[0].map((month, idx) => {
+      return weightsTable.reduce((accumulatedSum, currentRow) => {
+        return accumulatedSum + currentRow[idx]
+      }, 0)
+    })
+
+    weightsTable.push(monthSums)
+
+    // Loop through 'included' cells of weights table and the weights array
+    // to change text of table cells to reflect new weights
+    for (let i = 0; i < weightsTable.length; i += 1) {
+      const row = $(rows[i])
+      const cells = row.children('td')
+
+      for (let j = 0; j < weightsTable[i].length; j += 1) {
+        const cell = cells[j]
+        const value = ((weightsTable[i][j] / sumTotal) * 100).toFixed(2)
+        $(cell).text(`${value}%`)
+      }
+    }
   },
 }
 

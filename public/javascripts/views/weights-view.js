@@ -2,7 +2,7 @@ import Backbone from 'backbone'
 import $ from 'jquery'
 import _ from 'underscore'
 
-import d3Helper from '../helpers/d3-helper'
+import dataHelper from '../helpers/data-helper'
 import WeightView from './weight-view'
 
 const WeightsView = Backbone.View.extend({
@@ -185,7 +185,7 @@ const WeightsView = Backbone.View.extend({
     spans.removeClass('glyphicon-remove-sign')
     spans.addClass('glyphicon-ok-sign')
 
-    d3Helper.recalculatePercents()
+    dataHelper.recalculatePercents()
   },
   render () {
     this.$el.html(this.template())
