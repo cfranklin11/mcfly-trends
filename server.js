@@ -16,7 +16,7 @@ const app = express()
 // set up our express application
 app.use(morgan('dev')) // log every request to the console
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride())
 
 app.use('/dist', express.static(path.join(__dirname, './dist')))

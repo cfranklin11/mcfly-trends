@@ -7,7 +7,9 @@
       },
       "useBuiltIns": true
     }],
+    "react",
     "es2015",
+    "flow"
   ],
   "env": {
     "test": {
