@@ -1,11 +1,6 @@
-'use strict';
+import Backbone from 'backbone'
+import Trend from '../models/trend'
 
-var bbApp = bbApp || {};
+const Trends = Backbone.Collection.extend({ model: Trend })
 
-(function() {
-  var Trends = Backbone.Collection.extend({
-    model: bbApp.Trend
-  });
-
-  bbApp.trends = new Trends();
-})();
+export default Trends

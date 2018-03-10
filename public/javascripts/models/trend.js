@@ -1,13 +1,11 @@
-'use strict';
+import Backbone from 'backbone'
 
-var bbApp = bbApp || {};
+const Trend = Backbone.Model.extend({
+  defaults: {
+    year: 1984,
+    month: 'January',
+    volume: 0,
+  },
+})
 
-(function() {
-  bbApp.Trend = Backbone.Model.extend({
-    defaults: {
-      year: 1984,
-      month: 'January',
-      volume: 0
-    }
-  });
-})();
+export default Trend

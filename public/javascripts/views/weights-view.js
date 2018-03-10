@@ -1,213 +1,198 @@
-'use strict';
+import Backbone from 'backbone'
+import $ from 'jquery'
+import _ from 'underscore'
 
-var bbApp = bbApp || {};
+import d3Helper from '../helpers/d3-helper'
+import WeightView from './weight-view'
 
-(function($) {
-  bbApp.WeightsView = Backbone.View.extend({
-    el: $('#weights-div'),
-    template: _.template($('#weights-view').html()),
-    events: {
-      'mousedown th[data-col]': 'selectMonths',
-      'mouseover th[data-col]': 'highlightMonths',
-      'mouseenter th.included, th.excluded': 'highlightColumns',
-      'mouseleave th.included, th.excluded': 'unhighlightColumns',
-      'click #reset': 'resetMonths',
-    },
+const WeightsView = Backbone.View.extend({
+  el: $('#weights-div'),
+  template: _.template($('#weights-view').html()),
+  events: {
+    'mousedown th[data-col]': 'selectMonths',
+    'mouseover th[data-col]': 'highlightMonths',
+    'mouseenter th.included, th.excluded': 'highlightColumns',
+    'mouseleave th.included, th.excluded': 'unhighlightColumns',
+    'click #reset': 'resetMonths',
+  },
 
-    // Save event data in object for column toggle event in router
-    mousedown: false,
-    included: false,
-    cells: {
-      firstCell: undefined,
-      previousCell: undefined,
-      newCell: undefined
-    },
-    initialize: function() {
-      this.render();
-    },
-    addOne: function(weight) {
-      var weightView;
+  // Save event data in object for column toggle event in router
+  mousedown: false,
+  included: false,
+  cells: {
+    firstCell: undefined,
+    previousCell: undefined,
+    newCell: undefined,
+  },
+  initialize () {
+    this.render()
+  },
+  addOne (weight) {
+    const weightView = new WeightView({ model: weight })
+    this.$el.find('tbody').append(weightView.render().el)
+  },
 
-      weightView = new bbApp.WeightView({model: weight});
-      this.$el.find('tbody').append(weightView.render().el);
-    },
+  // Handle click on weights column
+  selectMonths (event) {
+    event.preventDefault()
 
-    // Handle click on weights column
-    selectMonths: function(event) {
-      var cell;
+    const cell = $(event.currentTarget)
+    this.mousedown = true
+    this.included = cell.hasClass('included')
+    this.cells.firstCell = cell
+    this.cells.newCell = cell
+  },
 
-      event.preventDefault();
+  // Handle column highlight during mousedown to highlight columns between
+  // column clicked and current column with cursor
+  highlightMonths (event) {
+    // Only active if mouse is down, keep track of first column clicked and
+    // previous column hovered with object properties
+    if (this.mousedown) {
+      const firstCol = +this.cells.firstCell.attr('data-col')
+      const prevCell = this.cells.newCell
+      this.cells.previousCell = prevCell
+      const prevCol = +prevCell.attr('data-col')
+      // const prevColCells = prevCell.closest('table').find(`[data-col="${prevCol}"]`)
+      const cell = $(event.currentTarget)
+      this.cells.newCell = cell
+      const col = +cell.attr('data-col')
+      // const colCells = cell.closest('table').find(`[data-col="${col}"]`)
+      const thisIncluded = this.included
 
-      cell = $(event.currentTarget);
-      this.mousedown = true;
-      this.included = cell.hasClass('included');
-      this.cells.firstCell = cell;
-      this.cells.newCell = cell;
-    },
+      // const minCol = 11
+      // const maxCol = 0
 
-    // Handle column highlight during mousedown to highlight columns between
-    // column clicked and current column with cursor
-    highlightMonths: function(event) {
-      var firstCol, prevCell, prevCol, prevColCells, cell, col, colCells,
-        thisIncluded, minCol, maxCol, i, toggleColCells, spans, thatIncluded;
+      if (col !== prevCol && col !== firstCol) {
+        // Handle highlight if cursor is to the left of first column clicked
+        if (col < firstCol) {
+          for (let i = 0; i < 12; i += 1) {
+            const toggleColCells = cell.closest('table').find(`[data-col="${i}"]`)
+            const spans = toggleColCells.find('span')
+            const thatIncluded = cell.closest('table').find(`th[data-col="${i}"]`).hasClass('included')
 
-      // Only active if mouse is down, keep track of first column clicked and
-      // previous column hovered with object properties
-      if (this.mousedown) {
-        firstCol = +this.cells.firstCell.attr('data-col');
-        prevCell = this.cells.newCell;
-        this.cells.previousCell = prevCell;
-        prevCol = +prevCell.attr('data-col');
-        prevColCells = prevCell.closest('table').find('[data-col="' + prevCol + '"]');
-        cell = $(event.currentTarget);
-        this.cells.newCell = cell;
-        col = +cell.attr('data-col');
-        colCells = cell.closest('table').find('[data-col="' + col + '"]');
-        thisIncluded = this.included;
+            if (col <= i && i <= firstCol) {
+              toggleColCells.addClass('table-hover')
 
-        minCol = 11;
-        maxCol = 0;
-
-        if (col !== prevCol && col !== firstCol) {
-
-          // Handle highlight if cursor is to the left of first column clicked
-          if (col < firstCol) {
-
-            for (i = 0; i < 12; i++) {
-              toggleColCells = cell.closest('table').find('[data-col="' + i + '"]');
-              spans = toggleColCells.find('span');
-              thatIncluded = cell.closest('table').find('th[data-col="' + i + '"]').hasClass('included');
-
-              if (col <= i && i <= firstCol) {
-                toggleColCells.addClass('table-hover');
-
-                if (thisIncluded) {
-                  spans.removeClass('glyphicon-ok-sign');
-                  spans.addClass('glyphicon-remove-sign');
-                } else {
-                  spans.removeClass('glyphicon-remove-sign');
-                  spans.addClass('glyphicon-ok-sign');
-                }
-
+              if (thisIncluded) {
+                spans.removeClass('glyphicon-ok-sign')
+                spans.addClass('glyphicon-remove-sign')
               } else {
-                toggleColCells.removeClass('table-hover');
+                spans.removeClass('glyphicon-remove-sign')
+                spans.addClass('glyphicon-ok-sign')
+              }
+            } else {
+              toggleColCells.removeClass('table-hover')
 
-                if (thatIncluded) {
-                  spans.removeClass('glyphicon-remove-sign');
-                  spans.addClass('glyphicon-ok-sign');
-                } else {
-                  spans.removeClass('glyphicon-ok-sign');
-                  spans.addClass('glyphicon-remove-sign');
-                }
+              if (thatIncluded) {
+                spans.removeClass('glyphicon-remove-sign')
+                spans.addClass('glyphicon-ok-sign')
+              } else {
+                spans.removeClass('glyphicon-ok-sign')
+                spans.addClass('glyphicon-remove-sign')
               }
             }
-
-            minCol = col;
-
-          // Handle highlight if cursor is to the right of first column clicked
-          } else {
-
-            for (i = 0; i < 12; i++) {
-              toggleColCells = cell.closest('table').find('[data-col="' + i + '"]');
-              spans = toggleColCells.find('span');
-              thatIncluded = cell.closest('table').find('th[data-col="' + i + '"]').hasClass('included');
-
-              if (firstCol <= i && i <= col) {
-                toggleColCells.addClass('table-hover');
-
-                if (thisIncluded) {
-                  spans.removeClass('glyphicon-ok-sign');
-                  spans.addClass('glyphicon-remove-sign');
-                } else {
-                  spans.removeClass('glyphicon-remove-sign');
-                  spans.addClass('glyphicon-ok-sign');
-                }
-
-              } else {
-                toggleColCells.removeClass('table-hover');
-
-                if (thatIncluded) {
-                  spans.removeClass('glyphicon-remove-sign');
-                  spans.addClass('glyphicon-ok-sign');
-                } else {
-                  spans.removeClass('glyphicon-ok-sign');
-                  spans.addClass('glyphicon-remove-sign');
-                }
-              }
-            }
-
-            maxCol = col;
           }
-        }
-      }
-    },
 
-    // Handle column highlighting with mouseenter (only if mouse is not down)
-    highlightColumns: function (event) {
-      var self, column, columnCells, span, included;
+          // const minCol = col
 
-      self = $(event.currentTarget);
-
-      column = self.attr('data-col');
-      columnCells = $('#table1').find('[data-col="' + column + '"]');
-      span = self.find('span');
-      included = self.hasClass('included');
-
-      if (!this.mousedown) {
-        columnCells.addClass('table-hover');
-
-        if (included) {
-          span.removeClass('glyphicon-ok-sign');
-          span.addClass('glyphicon-remove-sign');
+        // Handle highlight if cursor is to the right of first column clicked
         } else {
-          span.removeClass('glyphicon-remove-sign');
-          span.addClass('glyphicon-ok-sign');
+          for (let i = 0; i < 12; i += 1) {
+            const toggleColCells = cell.closest('table').find(`[data-col="${i}"]`)
+            const spans = toggleColCells.find('span')
+            const thatIncluded = cell.closest('table').find(`th[data-col="${i}"]`).hasClass('included')
+
+            if (firstCol <= i && i <= col) {
+              toggleColCells.addClass('table-hover')
+
+              if (thisIncluded) {
+                spans.removeClass('glyphicon-ok-sign')
+                spans.addClass('glyphicon-remove-sign')
+              } else {
+                spans.removeClass('glyphicon-remove-sign')
+                spans.addClass('glyphicon-ok-sign')
+              }
+            } else {
+              toggleColCells.removeClass('table-hover')
+
+              if (thatIncluded) {
+                spans.removeClass('glyphicon-remove-sign')
+                spans.addClass('glyphicon-ok-sign')
+              } else {
+                spans.removeClass('glyphicon-ok-sign')
+                spans.addClass('glyphicon-remove-sign')
+              }
+            }
+          }
+
+          // const maxCol = col
         }
       }
-    },
+    }
+  },
 
-    // Handle removal of column highlighting with mouseleave
-    // (only if mouse is not down)
-    unhighlightColumns: function(event) {
-      var self, column, columnCells, span, included;
+  // Handle column highlighting with mouseenter (only if mouse is not down)
+  highlightColumns (event) {
+    const self = $(event.currentTarget)
 
-      self = $(event.currentTarget);
+    const column = self.attr('data-col')
+    const columnCells = $('#table1').find(`[data-col="${column}"]`)
+    const span = self.find('span')
+    const included = self.hasClass('included')
 
-      column = self.attr('data-col');
-      columnCells = $('#table1').find('[data-col="' + column + '"]');
-      span = self.find('span');
-      included = self.hasClass('included');
-
-      columnCells.removeClass('table-hover');
+    if (!this.mousedown) {
+      columnCells.addClass('table-hover')
 
       if (included) {
-        span.removeClass('glyphicon-remove-sign');
-        span.addClass('glyphicon-ok-sign');
+        span.removeClass('glyphicon-ok-sign')
+        span.addClass('glyphicon-remove-sign')
       } else {
-        span.removeClass('glyphicon-ok-sign');
-        span.addClass('glyphicon-remove-sign');
+        span.removeClass('glyphicon-remove-sign')
+        span.addClass('glyphicon-ok-sign')
       }
-    },
-
-    // Activate (make included) all months
-    resetMonths: function() {
-      var excludedCells, excludedHeaders, spans;
-
-      excludedCells = $('#table1').find('.excluded');
-      excludedCells.removeClass('excluded');
-      excludedCells.addClass('included');
-
-      spans = $('#table1').find('th.included').find('span');
-      spans.removeClass('glyphicon-remove-sign');
-      spans.addClass('glyphicon-ok-sign');
-
-      bbApp.d3Helper.recalculatePercents();
-    },
-    render: function() {
-      this.$el.html(this.template());
-      this.collection.each(this.addOne, this);
-
-      return this;
     }
-  });
-})(jQuery);
+  },
+
+  // Handle removal of column highlighting with mouseleave
+  // (only if mouse is not down)
+  unhighlightColumns (event) {
+    const self = $(event.currentTarget)
+
+    const column = self.attr('data-col')
+    const columnCells = $('#table1').find(`[data-col="${column}"]`)
+    const span = self.find('span')
+    const included = self.hasClass('included')
+
+    columnCells.removeClass('table-hover')
+
+    if (included) {
+      span.removeClass('glyphicon-remove-sign')
+      span.addClass('glyphicon-ok-sign')
+    } else {
+      span.removeClass('glyphicon-ok-sign')
+      span.addClass('glyphicon-remove-sign')
+    }
+  },
+
+  // Activate (make included) all months
+  resetMonths () {
+    const excludedCells = $('#table1').find('.excluded')
+    excludedCells.removeClass('excluded')
+    excludedCells.addClass('included')
+
+    const spans = $('#table1').find('th.included').find('span')
+    spans.removeClass('glyphicon-remove-sign')
+    spans.addClass('glyphicon-ok-sign')
+
+    d3Helper.recalculatePercents()
+  },
+  render () {
+    this.$el.html(this.template())
+    this.collection.each(this.addOne, this)
+
+    return this
+  },
+})
+
+export default WeightsView

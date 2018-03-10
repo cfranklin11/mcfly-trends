@@ -1,21 +1,18 @@
-'use strict';
+import Backbone from 'backbone'
+import $ from 'jquery'
+import _ from 'underscore'
 
-var bbApp = bbApp || {};
+const WeightView = Backbone.View.extend({
+  tagName: 'tr',
+  template: _.template($('#weight-view').html()),
+  initialize () {
+    this.render()
+  },
+  render () {
+    const attributes = this.model.toJSON()
+    this.$el.html(this.template(attributes))
+    return this
+  },
+})
 
-// Create an individual account row for the accounts table
-(function($) {
-  bbApp.WeightView = Backbone.View.extend({
-    tagName: 'tr',
-    template: _.template($('#weight-view').html()),
-    initialize: function() {
-      this.render();
-    },
-    render: function() {
-      var attributes;
-
-      attributes = this.model.toJSON();
-      this.$el.html(this.template(attributes));
-      return this;
-    }
-  });
-})(jQuery);
+export default WeightView

@@ -1,8 +1,6 @@
-'use strict';
+import $ from 'jquery'
+import appRouter from './routers/router'
 
-var bbApp = bbApp || {};
-
-$(function () {
-  bbApp.appRouter.start();
-});
-
+$(() => {
+  appRouter.start()
+})

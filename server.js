@@ -8,6 +8,7 @@ const path = require('path')
 const morgan = require('morgan')
 const methodOverride = require('method-override')
 const getData = require('./middleware/google-trends-data')
+// const Bundler = require('parcel-bundler')
 
 // Create server
 const app = express()
@@ -18,12 +19,11 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(methodOverride())
 
-// Set client-side directory
-app.use(express.static(path.join(__dirname, '/public')))
+app.use('/dist', express.static(path.join(__dirname, './dist')))
 
 // Routes
 app.get('/', (req, res) => {
-  res.render('index')
+  res.sendFile(path.join(__dirname, './dist/index.html'))
 })
 
 app.post(
