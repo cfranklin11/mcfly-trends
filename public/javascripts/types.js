@@ -1,9 +1,9 @@
-type TrendData = {
+export type Trend = {
   formattedTime: string,
   value: Array<number>,
 }
 
 export type Data = {
-  data: Array<TrendData>,
+  trends: Array<Trend>,
   keyword: Array<string>,
 }

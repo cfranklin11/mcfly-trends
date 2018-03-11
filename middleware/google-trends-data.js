@@ -15,7 +15,7 @@ function getData (req, res, next) {
       // Have to filter by date after getting a response rather than using params,
       // because for shorter time periods, google-trends-api automatically returns
       // shorter time periods (e.g. weekly, daily) rather than monthly data
-      const data = responseData
+      const trends = responseData
         .filter((responseRow) => {
           const formattedTime = new Date(responseRow.formattedTime)
           return formattedTime >= startTime && formattedTime <= endTime
@@ -26,7 +26,7 @@ function getData (req, res, next) {
         })
       const keywordData = typeof keyword === 'string' ? [keyword] : keyword
 
-      req.trendsResponse = { data, keyword: keywordData }
+      req.trendsResponse = { trends, keyword: keywordData }
       return next()
     })
     .catch((err) => {
