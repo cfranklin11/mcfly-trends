@@ -52,57 +52,6 @@
       </div>
     </script>
 
-    <!-- WEIGHTS TABLE -->
-    <script type="text/template" id="weights-view">
-      <table id="table1" class="table table-bordered table-condensed">
-        <thead>
-          <tr>
-            <th colspan="14" class="text-center">
-              <h4>Search Volume Weights by Search Term & Month</h4>
-              <button id="reset" class="btn btn-default btn-md">Reset Months</button>
-              <h5>(Click on months to remove/add them)</h5>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>Search Term</th>
-            <th data-col="0" class="included">Jan<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="1" class="included">Feb<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="2" class="included">Mar<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="3" class="included">Apr<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="4" class="included">May<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="5" class="included">Jun<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="6" class="included">Jul<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="7" class="included">Aug<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="8" class="included">Sep<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="9" class="included">Oct<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="10" class="included">Nov<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="11" class="included">Dec<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th class="included">Weight by Term</th>
-          </tr>
-        </tbody>
-      </table>
-    </script>
-
-    <!-- WEIGHT VIEW -->
-    <script type="text/template" id="weight-view">
-      <th><%= term %></th>
-      <td data-col="0" data-weight=<%= '"' + monthWeights[0] + '"' %> class="included"><%= monthPercents[0] %></td>
-      <td data-col="1" data-weight=<%= '"' + monthWeights[1] + '"' %> class="included"><%= monthPercents[1] %></td>
-      <td data-col="2" data-weight=<%= '"' + monthWeights[2] + '"' %> class="included"><%= monthPercents[2] %></td>
-      <td data-col="3" data-weight=<%= '"' + monthWeights[3] + '"' %> class="included"><%= monthPercents[3] %></td>
-      <td data-col="4" data-weight=<%= '"' + monthWeights[4] + '"' %> class="included"><%= monthPercents[4] %></td>
-      <td data-col="5" data-weight=<%= '"' + monthWeights[5] + '"' %> class="included"><%= monthPercents[5] %></td>
-      <td data-col="6" data-weight=<%= '"' + monthWeights[6] + '"' %> class="included"><%= monthPercents[6] %></td>
-      <td data-col="7" data-weight=<%= '"' + monthWeights[7] + '"' %> class="included"><%= monthPercents[7] %></td>
-      <td data-col="8" data-weight=<%= '"' + monthWeights[8] + '"' %> class="included"><%= monthPercents[8] %></td>
-      <td data-col="9" data-weight=<%= '"' + monthWeights[9] + '"' %> class="included"><%= monthPercents[9] %></td>
-      <td data-col="10" data-weight=<%= '"' + monthWeights[10] + '"' %> class="included"><%= monthPercents[10] %></td>
-      <td data-col="11" data-weight=<%= '"' + monthWeights[11] + '"' %> class="included"><%= monthPercents[11] %></td>
-      <td class="included"><%= termPercent %></td>
-    </script>
-
     <script src="./javascripts/index.jsx"></script>
   </body>
 </html>
