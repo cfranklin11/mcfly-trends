@@ -54,6 +54,10 @@ form {
   color: #337ab7;
 }
 
+nav {
+  z-index: 1;
+}
+
 th {
   background-color: #337ab7;
   color: white;

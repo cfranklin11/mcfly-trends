@@ -1,8 +1,10 @@
 // @flow
 import React, { Component } from 'react'
+import { StickyContainer } from 'react-sticky'
 import Form from './Form'
 import TrendsTable from './TrendsTable'
 import WeightsTable from './WeightsTable'
+import Nav from './Nav'
 
 import type { Data, Trend } from '../types'
 
@@ -36,6 +38,12 @@ class App extends Component<Props, State> {
       currentWeightsMatrix: weightsMatrix,
       hasData: true,
     })
+
+    if (!this.navRef) {
+      return
+    }
+
+    this.navRef.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
   }
 
   calculateKeywordWeights = (keyword: Array<string>, trends: Array<Trend>) => {
@@ -66,38 +74,77 @@ class App extends Component<Props, State> {
   }
 
   scrollToTop = () => {
-    window.scrollTo(0, 0)
+    if (!this.formRef) {
+      return
+    }
+
+    this.formRef.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
   }
 
   displayPercent = (row: Array<number>, totalWeight: number) => {
     return row.map(weight => ((weight / totalWeight) * 100).toFixed(2))
   }
 
-  downloadCsv = () => {
+  transformTrendRow = (trend: Trend) => {
+    const monthYear = trend.formattedTime.split(' ')
+    return [monthYear[1], monthYear[0]].concat(trend.value)
+  }
 
+  downloadCsv = () => {
+    const { currentWeightsMatrix, trends, keyword } = this.state
+    const weightsTable = [['Search Volume Weights by Search Term & Month\n']]
+      .concat(currentWeightsMatrix.map((row, idx) => {
+        const term = keyword[idx] || 'Monthly Weight'
+        return [term].concat(row)
+      }))
+    const trendsTable = [['\n\nRaw Google Trends Data']]
+      .concat(trends.map((trend) => {
+        return this.transformTrendRow(trend)
+      }))
+    const csvContent = 'data:text/csvcharset=utf-8,'
+      .concat(weightsTable.map((row) => {
+        return row.join(',')
+      }).join('\n'))
+      .concat(trendsTable.map((row) => {
+        return row.join(',')
+      }).join('\n'))
+
+    // Use CSV string to create CSV file, then download it
+    const encodedUri = encodeURI(csvContent)
+    const linkTag = document.createElement('a')
+    linkTag.setAttribute('href', encodedUri)
+    linkTag.setAttribute('download', 'monthly-data.csv')
+
+    linkTag.click()
   }
 
   render () {
     const { trends, keyword, hasData, currentWeightsMatrix, currentTotalWeight } = this.state
 
     return (
-      <div id="outer-div">
+      <div id="outer-div" ref={(el) => { this.formRef = el }}>
         <Form handleData={this.handleData} />
 
         {hasData && (
           <div className="container" id="data-div">
-            <div className="row text-center" id="nav-div">
-              <p>Nav Stuff</p>
-            </div>
-            <main>
-              <WeightsTable
-                keyword={keyword}
-                weightsMatrix={currentWeightsMatrix}
-                totalWeight={currentTotalWeight}
-                displayPercent={this.displayPercent}
-              />
-              <TrendsTable trends={trends} keyword={keyword} />
-            </main>
+            <StickyContainer>
+              <div className="row text-center" id="nav-div" ref={(el) => { this.navRef = el }}>
+                <Nav
+                  keyword={keyword}
+                  scrollFunc={this.scrollToTop}
+                  downloadCsv={this.downloadCsv}
+                />
+              </div>
+              <main className="row">
+                <WeightsTable
+                  keyword={keyword}
+                  weightsMatrix={currentWeightsMatrix}
+                  totalWeight={currentTotalWeight}
+                  displayPercent={this.displayPercent}
+                />
+                <TrendsTable trends={trends} keyword={keyword} />
+              </main>
+            </StickyContainer>
           </div>
         )}
       </div>
