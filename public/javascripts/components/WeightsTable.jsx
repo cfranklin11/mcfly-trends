@@ -1,12 +1,13 @@
 // @flow
 import React from 'react'
+import type { Node } from 'react'
 import WeightRow from './WeightRow'
 
 type Props = {
   keyword: Array<string>,
   weightsMatrix: Array<Array<number>>,
   totalWeight: number,
-  displayPercent: (Array<number>, number) => number,
+  displayPercent: (Array<number>, number) => Array<string>,
   toggleColumn: (number) => () => void
 }
 
@@ -15,7 +16,7 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
 
 export default function WeightsTable (
   { keyword, weightsMatrix, totalWeight, displayPercent, toggleColumn }: Props,
-) {
+): Node {
   return (
     <table id="table1" className="table table-bordered table-condensed">
       <thead>

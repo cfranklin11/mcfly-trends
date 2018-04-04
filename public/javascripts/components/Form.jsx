@@ -1,5 +1,7 @@
 // @flow
 import React, { Component } from 'react'
+import type { Node } from 'react'
+
 import type { Data } from '../types'
 
 type State = {
@@ -25,21 +27,21 @@ class Form extends Component<Props, State> {
     errors: [],
   }
 
-  handleKeyPress = (event: SyntheticInputEvent<HTMLInputElement>) => {
+  handleKeyPress = (event: SyntheticInputEvent<HTMLInputElement>): void => {
     this.setState({ keyword: event.currentTarget.value })
   }
 
-  handleSelect = (event: SyntheticInputEvent<HTMLSelectElement>) => {
+  handleSelect = (event: SyntheticInputEvent<HTMLSelectElement>): void => {
     this.setState({ geo: event.currentTarget.value })
   }
 
   handleMonthChange = (label: string) => {
-    return (event: SyntheticInputEvent<HTMLInputElement>) => {
+    return (event: SyntheticInputEvent<HTMLInputElement>): void => {
       this.setState({ [label]: event.currentTarget.value })
     }
   }
 
-  handleFormSubmit = (event: SyntheticInputEvent<HTMLFormElement>) => {
+  handleFormSubmit = (event: SyntheticInputEvent<HTMLFormElement>): void => {
     const { keyword, geo, startMonth, endMonth, errors } = this.state
 
     event.preventDefault()
@@ -73,7 +75,7 @@ class Form extends Component<Props, State> {
       })
   }
 
-  render () {
+  render (): Node {
     const { keyword, geo, isSubmitting, startMonth, endMonth, errors } = this.state
 
     return (

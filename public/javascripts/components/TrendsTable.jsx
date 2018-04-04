@@ -1,14 +1,16 @@
 // @flow
 import React from 'react'
-import type { Trend } from '../types'
+import type { Node } from 'react'
 import TrendRow from './TrendRow'
+
+import type { Trend } from '../types'
 
 type Props = {
   keyword: Array<string>,
   trends: Array<Trend>,
 }
 
-function TrendsTable ({ keyword, trends }: Props) {
+function TrendsTable ({ keyword, trends }: Props): Node {
   if (trends.length === 0) {
     return null
   }

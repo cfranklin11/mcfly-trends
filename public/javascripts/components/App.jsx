@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react'
+import type { Node } from 'react'
 import { StickyContainer } from 'react-sticky'
 import Form from './Form'
 import TrendsTable from './TrendsTable'
@@ -23,9 +24,18 @@ const MONTH_REGEXES = [/Jan/, /Feb/, /Mar/, /Apr/, /May/, /Jun/, /Jul/, /Aug/,
   /Sep/, /Oct/, /Nov/, /Dec/]
 
 class App extends Component<Props, State> {
-  state = { hasData: false, trends: [], keyword: [], weightsMatrix: [] }
+  state = {
+    hasData: false,
+    trends: [],
+    keyword: [],
+    weightsMatrix: [],
+    currentWeightsMatrix: [],
+    currentTotalWeight: 0,
+  }
+  navRef = undefined
+  formRef = undefined
 
-  handleData = (data: Data) => {
+  handleData = (data: Data): void => {
     const { trends, keyword } = data
     const weightsMatrix = this.calculateWeightsMatrix(
       this.calculateMonthlyKeywordWeights(keyword, trends),
@@ -48,7 +58,10 @@ class App extends Component<Props, State> {
     this.navRef.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
   }
 
-  calculateMonthlyKeywordWeights = (keyword: Array<string>, trends: Array<Trend>) => {
+  calculateMonthlyKeywordWeights = (
+    keyword: Array<string>,
+    trends: Array<Trend>,
+  ): Array<Array<number>> => {
     return keyword.map((_kw, idx) => {
       return MONTH_REGEXES.map((monthRegex) => {
         return trends
@@ -59,7 +72,7 @@ class App extends Component<Props, State> {
     })
   }
 
-  calculateWeightsMatrix = (keywordWeights: Array<Array<number>>) => {
+  calculateWeightsMatrix = (keywordWeights: Array<Array<number>>): Array<Array<number>> => {
     return keywordWeights
       // Concat extra row with total weight per month
       .concat([MONTH_REGEXES.map((_monthRegex, idx) => {
@@ -75,7 +88,7 @@ class App extends Component<Props, State> {
       })
   }
 
-  scrollToTop = () => {
+  scrollToTop = (): void => {
     if (!this.formRef) {
       return
     }
@@ -83,7 +96,7 @@ class App extends Component<Props, State> {
     this.formRef.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
   }
 
-  displayPercent = (row: Array<number>, totalWeight: number) => {
+  displayPercent = (row: Array<number>, totalWeight: number): Array<string> => {
     return row.map(weight => ((weight / totalWeight) * 100).toFixed(2))
   }
 
@@ -92,7 +105,7 @@ class App extends Component<Props, State> {
     return [monthYear[1], monthYear[0]].concat(trend.value)
   }
 
-  downloadCsv = () => {
+  downloadCsv = (): void => {
     const { currentWeightsMatrix, trends, keyword } = this.state
     const weightsTable = [['Search Volume Weights by Search Term & Month\n']]
       .concat(currentWeightsMatrix.map((row, idx) => {
@@ -120,7 +133,7 @@ class App extends Component<Props, State> {
     linkTag.click()
   }
 
-  handleToggleMonth = (idx: number) => {
+  handleToggleMonth = (idx: number): () => void => {
     const { weightsMatrix, currentWeightsMatrix } = this.state
 
     return () => {
@@ -151,17 +164,17 @@ class App extends Component<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const { trends, keyword, hasData, currentWeightsMatrix, currentTotalWeight } = this.state
 
     return (
-      <div id="outer-div" ref={(el) => { this.formRef = el }}>
+      <div id="outer-div" ref={(el: HTMLElement|null) => { if (el) this.formRef = el }}>
         <Form handleData={this.handleData} />
 
         {hasData && (
           <div className="container" id="data-div">
             <StickyContainer>
-              <div className="row text-center" id="nav-div" ref={(el) => { this.navRef = el }}>
+              <div className="row text-center" id="nav-div" ref={(el: HTMLElement|null) => { if (el) this.navRef = el }}>
                 <Nav
                   keyword={keyword}
                   scrollFunc={this.scrollToTop}

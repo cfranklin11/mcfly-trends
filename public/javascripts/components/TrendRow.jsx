@@ -1,12 +1,14 @@
 // @flow
 import React from 'react'
+import type { Node } from 'react'
+
 import type { Trend } from '../types'
 
 type Props = {
   trend: Trend
 }
 
-function TrendRow ({ trend }: Props) {
+function TrendRow ({ trend }: Props): Node {
   const { formattedTime } = trend
   const monthYear = formattedTime.split(' ')
   return (

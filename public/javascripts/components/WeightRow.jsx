@@ -1,12 +1,13 @@
 // @flow
 import React, { Fragment } from 'react'
+import type { Node } from 'react'
 
 type Props = {
   keyword: string,
   percents: Array<string>
 }
 
-function WeightRow ({ keyword, percents }: Props) {
+function WeightRow ({ keyword, percents }: Props): Node {
   return (
     <Fragment>
       <tr>
