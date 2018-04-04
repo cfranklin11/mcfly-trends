@@ -27,7 +27,9 @@ class App extends Component<Props, State> {
 
   handleData = (data: Data) => {
     const { trends, keyword } = data
-    const weightsMatrix = this.calculateWeights(this.calculateKeywordWeights(keyword, trends))
+    const weightsMatrix = this.calculateWeightsMatrix(
+      this.calculateMonthlyKeywordWeights(keyword, trends),
+    )
     const currentTotalWeight = weightsMatrix[weightsMatrix.length - 1].slice(-1)[0]
 
     this.setState({
@@ -46,7 +48,7 @@ class App extends Component<Props, State> {
     this.navRef.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
   }
 
-  calculateKeywordWeights = (keyword: Array<string>, trends: Array<Trend>) => {
+  calculateMonthlyKeywordWeights = (keyword: Array<string>, trends: Array<Trend>) => {
     return keyword.map((_kw, idx) => {
       return MONTH_REGEXES.map((monthRegex) => {
         return trends
@@ -57,7 +59,7 @@ class App extends Component<Props, State> {
     })
   }
 
-  calculateWeights = (keywordWeights: Array<Array<number>>) => {
+  calculateWeightsMatrix = (keywordWeights: Array<Array<number>>) => {
     return keywordWeights
       // Concat extra row with total weight per month
       .concat([MONTH_REGEXES.map((_monthRegex, idx) => {
@@ -118,6 +120,37 @@ class App extends Component<Props, State> {
     linkTag.click()
   }
 
+  handleToggleMonth = (idx: number) => {
+    const { weightsMatrix, currentWeightsMatrix } = this.state
+
+    return () => {
+      // Recalculate total weights after toggling the given month's weights on/off
+      const newWeightsMatrix = this.calculateWeightsMatrix(
+        currentWeightsMatrix.map((row, rowIdx) => {
+          return row.map((weight, colIdx) => {
+            // Toggle between 0 and original weight from Google Trends API
+            if (idx === colIdx) {
+              if (weight === 0) {
+                return weightsMatrix[rowIdx][colIdx]
+              }
+
+              return 0
+            }
+
+            return weight
+          }).slice(0, -1) // Remove keyword totals
+        }).slice(0, -1), // Remove monthly totals
+      )
+      // Recalculate total to match new currentWeightsMatrix
+      const newTotalWeight = newWeightsMatrix[newWeightsMatrix.length - 1].slice(-1)[0]
+
+      this.setState({
+        currentWeightsMatrix: newWeightsMatrix,
+        currentTotalWeight: newTotalWeight,
+      })
+    }
+  }
+
   render () {
     const { trends, keyword, hasData, currentWeightsMatrix, currentTotalWeight } = this.state
 
@@ -141,6 +174,7 @@ class App extends Component<Props, State> {
                   weightsMatrix={currentWeightsMatrix}
                   totalWeight={currentTotalWeight}
                   displayPercent={this.displayPercent}
+                  toggleColumn={this.handleToggleMonth}
                 />
                 <TrendsTable trends={trends} keyword={keyword} />
               </main>

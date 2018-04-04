@@ -6,14 +6,15 @@ type Props = {
   keyword: Array<string>,
   weightsMatrix: Array<Array<number>>,
   totalWeight: number,
-  displayPercent: (Array<number>, number) => number
+  displayPercent: (Array<number>, number) => number,
+  toggleColumn: (number) => () => void
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
   'Oct', 'Nov', 'Dec']
 
 export default function WeightsTable (
-  { keyword, weightsMatrix, totalWeight, displayPercent }: Props,
+  { keyword, weightsMatrix, totalWeight, displayPercent, toggleColumn }: Props,
 ) {
   return (
     <table id="table1" className="table table-bordered table-condensed">
@@ -29,11 +30,13 @@ export default function WeightsTable (
       <tbody>
         <tr>
           <th>Search Term</th>
-          {MONTHS.map((month) => {
+          {MONTHS.map((month, idx) => {
             return (
               <th key={month}>
-                {month}
-                <span className="glyphicon glyphicon-ok-sign" aria-hidden="true" />
+                <button className="btn btn-primary" onClick={toggleColumn(idx)}>
+                  {month}
+                  <span className="glyphicon glyphicon-ok-sign" aria-hidden="true" />
+                </button>
               </th>
             )
           })}
