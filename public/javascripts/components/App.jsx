@@ -164,6 +164,15 @@ class App extends Component<Props, State> {
     }
   }
 
+  handleResetWeights = () => {
+    const { weightsMatrix } = this.state
+
+    this.setState({
+      currentWeightsMatrix: weightsMatrix,
+      currentTotalWeight: weightsMatrix[weightsMatrix.length - 1].slice(-1)[0],
+    })
+  }
+
   render (): Node {
     const { trends, keyword, hasData, currentWeightsMatrix, currentTotalWeight } = this.state
 
@@ -188,6 +197,7 @@ class App extends Component<Props, State> {
                   totalWeight={currentTotalWeight}
                   displayPercent={this.displayPercent}
                   toggleColumn={this.handleToggleMonth}
+                  resetWeights={this.handleResetWeights}
                 />
                 <TrendsTable trends={trends} keyword={keyword} />
               </main>

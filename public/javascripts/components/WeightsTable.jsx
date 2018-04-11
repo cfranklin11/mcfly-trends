@@ -10,7 +10,8 @@ type Props = {
   weightsMatrix: Array<Array<number>>,
   totalWeight: number,
   displayPercent: (Array<number>, number) => Array<string>,
-  toggleColumn: ToggleColumn
+  toggleColumn: ToggleColumn,
+  resetWeights: () => void
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
@@ -55,7 +56,7 @@ function monthsRow (weightsMatrix: Array<Array<number>>, toggleColumn: ToggleCol
 }
 
 export default function WeightsTable (
-  { keyword, weightsMatrix, totalWeight, displayPercent, toggleColumn }: Props,
+  { keyword, weightsMatrix, totalWeight, displayPercent, toggleColumn, resetWeights }: Props,
 ): Node {
   return (
     <div className="WeightsTable">
@@ -64,7 +65,7 @@ export default function WeightsTable (
           <tr>
             <th colSpan="14" className="text-center">
               <h4 className="weightsTitle">Search Volume Weights by Search Term & Month</h4>
-              <button className="btn btn-default btn-md resetButton">Reset Months</button>
+              <button className="btn btn-default btn-md resetButton" onClick={resetWeights}>Reset Months</button>
               <h5 className="weightsHeader">(Click on months to remove/add them)</h5>
             </th>
           </tr>
