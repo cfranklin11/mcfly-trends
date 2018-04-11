@@ -9,7 +9,7 @@
     "dev": "nodemon server.js",
     "debug": "node-inspect server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "parcel build public/javascripts/index.jsx"
+    "heroku-postbuild": "parcel build public/index.html"
   },
   "engines": {
     "node": "9.9.x"
