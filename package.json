@@ -2,7 +2,6 @@
   "name": "monthly-trends",
   "version": "1.0.0",
   "description": "Create monthly data table from Google Trends",
-  "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "bundle": "parcel watch public/index.html",
@@ -11,16 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "parcel build public/index.html"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cfranklin11/monthly-trends.git"
+  "engines" : {
+    "node" : "9.9.x"
   },
-  "author": "Craig Franklin",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/cfranklin11/monthly-trends/issues"
-  },
-  "homepage": "https://github.com/cfranklin11/monthly-trends#readme",
   "dependencies": {
     "body-parser": "^1.14.2",
     "classnames": "^2.2.5",
