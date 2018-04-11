@@ -2,13 +2,14 @@
   "name": "monthly-trends",
   "version": "1.0.0",
   "description": "Create monthly data table from Google Trends",
+  "license": "MIT",
   "scripts": {
     "start": "node server.js",
     "bundle": "parcel watch public/index.html",
     "dev": "nodemon server.js",
     "debug": "node-inspect server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "parcel build public/index.html"
+    "heroku-postbuild": "parcel build public/javascripts/index.jsx"
   },
   "engines": {
     "node": "9.9.x"
