@@ -1,0 +1,9 @@
+[ignore]
+./dist/.*
+
+[libs]
+./public/javascripts/global.js
+
+[options]
+module.name_mapper='.+\.s?css' -> 'CSSModule'
+module.system=haste

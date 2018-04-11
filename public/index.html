@@ -18,8 +18,6 @@
     <link rel="shortcut icon" href="./images/dachshund.png" type="image/jpg">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <!-- Project CSS -->
-    <link rel="stylesheet" href="./stylesheets/index.css">
   </head>
 
   <body>
@@ -35,137 +33,9 @@
       </header>
     </div>
 
-    <div id="outer-div">
-      <div class="row" id="form-div">
-      </div>
-      <div class="container" id="data-div">
-        <div class="row text-center" id="nav-div">
-        </div>
-        <main>
-          <div id="weights-div">
-          </div>
-          <div id="trends-div">
-          </div>
-        </main>
-      </div>
+    <div id='root'>
     </div>
 
-    <!-- FORM VIEW -->
-    <script type="text/template" id="form-view">
-      <div class="container well col-sm-4 col-sm-offset-4">
-        <form method="get" id="form">
-          <div class="form-group">
-            <label for="terms">Search Terms (separated by commas)</label>
-            <input type="text" name="terms" id="terms" class="form-control">
-          </div>
-
-          <div class="form-group">
-            <label for="select">Location</label>
-            <select name="country" form="form" id="select" class="form-control">
-              <option value="">Worldwide</option>
-              <option value="AU">Australia</option>
-              <option value="NZ">New Zealand</option>
-            </select>
-          </div>
-
-          <div class="form-group col-lg-6" id="start-div">
-            <label for="start">Start Date (optional)</label>
-            <input type="month" name="start" id="start" class="form-control">
-          </div>
-
-          <div class="form-group col-lg-6" id="end-div">
-            <label for="end">End Date (optional)</label>
-            <input type="month" name="end" id="end" class="form-control">
-          </div>
-
-          <button type="submit" disabled="disabled" id="search-submit" class="btn btn-primary btn-lg btn-block">Submit</button>
-        </form>
-      </div>
-    </script>
-
-    <!-- NAV VIEW -->
-    <script type="text/template" class="row text-center" id="nav-view">
-      <h3>Here's your trends data for <%= terms %></h3>
-      <h3><%= message %></h3>
-      <div id="nav-bar">
-        <nav class="navbar navbar-default">
-          <div class="col-sm-6 col-sm-offset-3">
-            <button id="csv" class="btn btn-lg navbar-btn btn-success">Download CSV</button>
-            <button id="top" class="btn btn-lg navbar-btn btn-primary">Back to Top</button>
-          </div>
-        </nav>
-      </div>
-    </script>
-
-    <!-- WEIGHTS TABLE -->
-    <script type="text/template" id="weights-view">
-      <table id="table1" class="table table-bordered table-condensed">
-        <thead>
-          <tr>
-            <th colspan="14" class="text-center">
-              <h4>Search Volume Weights by Search Term & Month</h4>
-              <button id="reset" class="btn btn-default btn-md">Reset Months</button>
-              <h5>(Click on months to remove/add them)</h5>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>Search Term</th>
-            <th data-col="0" class="included">Jan<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="1" class="included">Feb<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="2" class="included">Mar<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="3" class="included">Apr<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="4" class="included">May<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="5" class="included">Jun<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="6" class="included">Jul<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="7" class="included">Aug<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="8" class="included">Sep<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="9" class="included">Oct<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="10" class="included">Nov<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th data-col="11" class="included">Dec<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span></th>
-            <th class="included">Weight by Term</th>
-          </tr>
-        </tbody>
-      </table>
-    </script>
-
-    <!-- WEIGHT VIEW -->
-    <script type="text/template" id="weight-view">
-      <th><%= term %></th>
-      <td data-col="0" data-weight=<%= '"' + monthWeights[0] + '"' %> class="included"><%= monthPercents[0] %></td>
-      <td data-col="1" data-weight=<%= '"' + monthWeights[1] + '"' %> class="included"><%= monthPercents[1] %></td>
-      <td data-col="2" data-weight=<%= '"' + monthWeights[2] + '"' %> class="included"><%= monthPercents[2] %></td>
-      <td data-col="3" data-weight=<%= '"' + monthWeights[3] + '"' %> class="included"><%= monthPercents[3] %></td>
-      <td data-col="4" data-weight=<%= '"' + monthWeights[4] + '"' %> class="included"><%= monthPercents[4] %></td>
-      <td data-col="5" data-weight=<%= '"' + monthWeights[5] + '"' %> class="included"><%= monthPercents[5] %></td>
-      <td data-col="6" data-weight=<%= '"' + monthWeights[6] + '"' %> class="included"><%= monthPercents[6] %></td>
-      <td data-col="7" data-weight=<%= '"' + monthWeights[7] + '"' %> class="included"><%= monthPercents[7] %></td>
-      <td data-col="8" data-weight=<%= '"' + monthWeights[8] + '"' %> class="included"><%= monthPercents[8] %></td>
-      <td data-col="9" data-weight=<%= '"' + monthWeights[9] + '"' %> class="included"><%= monthPercents[9] %></td>
-      <td data-col="10" data-weight=<%= '"' + monthWeights[10] + '"' %> class="included"><%= monthPercents[10] %></td>
-      <td data-col="11" data-weight=<%= '"' + monthWeights[11] + '"' %> class="included"><%= monthPercents[11] %></td>
-      <td class="included"><%= termPercent %></td>
-    </script>
-
-    <!-- TRENDS TABLE -->
-    <script type="text/template" id="trends-view">
-      <table id="table2" class="table table-bordered table-condensed">
-        <thead>
-          <tr>
-            <th class="text-center">
-              <h4>Raw Google Trends Data</h4>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>Year</th>
-            <th>Month</th>
-          </tr>
-        </tbody>
-      </table>
-    </script>
-    <script src="./javascripts/app.js"></script>
+    <script src="./javascripts/index.jsx"></script>
   </body>
 </html>

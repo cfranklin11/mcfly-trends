@@ -4,10 +4,9 @@ const googleTrends = require('google-trends-api')
 
 // Make call to Google Trends
 function getData (req, res, next) {
-  const keyword = req.body['keyword[]']
-  const startTime = req.body.startTime === '' ? new Date(0) : new Date(req.body.startTime)
-  const endTime = req.body.endTime === '' ? new Date() : new Date(req.body.endTime)
-  const geo = req.body.geo
+  const { keyword, geo, startMonth, endMonth } = req.body
+  const startTime = startMonth === '' ? new Date(0) : new Date(startMonth)
+  const endTime = endMonth === '' ? new Date() : new Date(endMonth)
   const params = { keyword, geo }
 
   googleTrends.interestOverTime(params)
@@ -16,13 +15,18 @@ function getData (req, res, next) {
       // Have to filter by date after getting a response rather than using params,
       // because for shorter time periods, google-trends-api automatically returns
       // shorter time periods (e.g. weekly, daily) rather than monthly data
-      const timeFilteredData = responseData.filter((data) => {
-        const formattedTime = new Date(data.formattedTime)
-        return formattedTime >= startTime && formattedTime <= endTime
-      })
+      const trends = responseData
+        .filter((responseRow) => {
+          const formattedTime = new Date(responseRow.formattedTime)
+          return formattedTime >= startTime && formattedTime <= endTime
+        })
+        .map((dataRow) => {
+          const { formattedTime, value } = dataRow
+          return { formattedTime, value }
+        })
       const keywordData = typeof keyword === 'string' ? [keyword] : keyword
 
-      req.trendsResponse = { data: timeFilteredData, keyword: keywordData }
+      req.trendsResponse = { trends, keyword: keywordData }
       return next()
     })
     .catch((err) => {
