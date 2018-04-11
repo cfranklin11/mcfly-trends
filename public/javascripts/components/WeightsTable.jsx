@@ -11,11 +11,9 @@ type Props = {
   totalWeight: number,
   displayPercent: (Array<number>, number) => Array<string>,
   toggleColumn: ToggleColumn,
-  resetWeights: () => void
+  resetWeights: () => void,
+  months: Array<string>
 }
-
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-  'Oct', 'Nov', 'Dec']
 
 function monthColumn (
   weightsMatrix: Array<Array<number>>,
@@ -47,16 +45,28 @@ function monthColumn (
   }
 }
 
-function monthsRow (weightsMatrix: Array<Array<number>>, toggleColumn: ToggleColumn) {
+function monthsRow (
+  weightsMatrix: Array<Array<number>>,
+  toggleColumn: ToggleColumn,
+  months: Array<string>,
+) {
   return (<tr>
     <th>Search Term</th>
-    {MONTHS.map(monthColumn(weightsMatrix, toggleColumn))}
+    {months.map(monthColumn(weightsMatrix, toggleColumn))}
     <th>Weight by Term</th>
   </tr>)
 }
 
 export default function WeightsTable (
-  { keyword, weightsMatrix, totalWeight, displayPercent, toggleColumn, resetWeights }: Props,
+  {
+    keyword,
+    weightsMatrix,
+    totalWeight,
+    displayPercent,
+    toggleColumn,
+    resetWeights,
+    months,
+  }: Props,
 ): Node {
   return (
     <div className="WeightsTable">
@@ -71,7 +81,7 @@ export default function WeightsTable (
           </tr>
         </thead>
         <tbody>
-          {monthsRow(weightsMatrix, toggleColumn)}
+          {monthsRow(weightsMatrix, toggleColumn, months)}
 
           {weightsMatrix.map((row, idx) => {
             const kw = keyword[idx] || 'Monthly Weight'

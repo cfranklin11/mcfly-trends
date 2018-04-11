@@ -20,6 +20,8 @@ type State = {
   currentTotalWeight: number
 }
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+  'Oct', 'Nov', 'Dec']
 const MONTH_REGEXES = [/Jan/, /Feb/, /Mar/, /Apr/, /May/, /Jun/, /Jul/, /Aug/,
   /Sep/, /Oct/, /Nov/, /Dec/]
 
@@ -106,13 +108,14 @@ class App extends Component<Props, State> {
   }
 
   downloadCsv = (): void => {
-    const { currentWeightsMatrix, trends, keyword } = this.state
+    const { currentWeightsMatrix, trends, keyword, currentTotalWeight } = this.state
     const weightsTable = [['Search Volume Weights by Search Term & Month\n']]
+      .concat([['Search Term', ...MONTHS, 'Weight by Term']])
       .concat(currentWeightsMatrix.map((row, idx) => {
         const term = keyword[idx] || 'Monthly Weight'
-        return [term].concat(row)
+        return [term].concat(this.displayPercent(row, currentTotalWeight))
       }))
-    const trendsTable = [['\n\nRaw Google Trends Data']]
+    const trendsTable = [['\n\n\nRaw Google Trends Data\n']]
       .concat(trends.map((trend) => {
         return this.transformTrendRow(trend)
       }))
@@ -198,6 +201,7 @@ class App extends Component<Props, State> {
                   displayPercent={this.displayPercent}
                   toggleColumn={this.handleToggleMonth}
                   resetWeights={this.handleResetWeights}
+                  months={MONTHS}
                 />
                 <TrendsTable trends={trends} keyword={keyword} />
               </main>
