@@ -2,10 +2,10 @@
 import React, { Component } from 'react'
 import type { Node } from 'react'
 import { StickyContainer } from 'react-sticky'
-import Form from './Form'
+import QueryForm from './QueryForm'
 import TrendsTable from './TrendsTable'
 import WeightsTable from './WeightsTable'
-import Nav from './Nav'
+import QueryNav from './QueryNav'
 
 import type { Data, Trend } from '../types'
 
@@ -168,14 +168,14 @@ class App extends Component<Props, State> {
     const { trends, keyword, hasData, currentWeightsMatrix, currentTotalWeight } = this.state
 
     return (
-      <div id="outer-div" ref={(el: HTMLElement|null) => { if (el) this.formRef = el }}>
-        <Form handleData={this.handleData} />
+      <div ref={(el: HTMLElement|null) => { if (el) this.formRef = el }}>
+        <QueryForm handleData={this.handleData} />
 
         {hasData && (
           <div className="container" id="data-div">
             <StickyContainer>
               <div className="row text-center" id="nav-div" ref={(el: HTMLElement|null) => { if (el) this.navRef = el }}>
-                <Nav
+                <QueryNav
                   keyword={keyword}
                   scrollFunc={this.scrollToTop}
                   downloadCsv={this.downloadCsv}

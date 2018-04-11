@@ -1,0 +1,105 @@
+.QueryForm {
+  .startMonth {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .endMonth {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .queryForm {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 1076px) {
+    .startMonth {
+      padding-right: 15px;
+    }
+
+    .endMonth {
+      padding-left: 15px;
+    }
+  }
+}
+
+.QueryNav {
+  .queryNav {
+    z-index: 1;
+  }
+
+  .navButtonContainer {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .navButton {
+    flex-grow: 0.2;
+  }
+}
+
+.TrendsTable {
+  .trendsTable {
+    font-size: 12px;
+
+    th {
+      background-color: #337ab7;
+      color: white;
+    }
+
+    td {
+      background-color: #f8f8f8;
+    }
+  }
+}
+
+.WeightsTable {
+  .weightsTable {
+    font-size: 12px;
+  }
+
+  .resetButton {
+    float: right;
+    margin-top: 1.4em;
+    margin-right: 1em;
+  }
+
+  .weightsTitle {
+    display: inline-block;
+    margin-left: 20%;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  .weightsHeader {
+    display: inline-block;
+    margin-left: 20%;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 0.5em;
+  }
+
+  .activeMonth {
+    background-color: #5cb85c;
+  }
+
+  .inactiveMonth {
+    background-color: #d9534f;
+  }
+
+  .toggleButton {
+    width: 100%;
+    height: 100%;
+  }
+
+  th {
+    vertical-align: middle;
+    background-color: #337ab7;
+    color: white;
+  }
+
+  td {
+    background-color: #f8f8f8;
+  }
+}
