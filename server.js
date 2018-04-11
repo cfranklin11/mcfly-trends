@@ -19,7 +19,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride())
 
-app.use('/dist', express.static(path.join(__dirname, './dist')))
+app.use(express.static('dist'))
 
 // Routes
 app.get('/', (req, res) => {
