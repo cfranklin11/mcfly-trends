@@ -12,13 +12,13 @@
     "heroku-postbuild": "parcel build public/index.html --public-url /"
   },
   "engines": {
-    "node": "9.9.x"
+    "node": "9.11.1"
   },
   "dependencies": {
     "body-parser": "^1.14.2",
     "classnames": "^2.2.5",
     "express": "^4.13.3",
-    "google-trends-api": "^4.4.0",
+    "google-trends-api": "^4.7.0",
     "method-override": "^2.3.5",
     "morgan": "^1.6.1",
     "node-sass": "^4.8.3",
